@@ -1,5 +1,3 @@
-# This is and empty python file for initial commit purposes
-#what happens if I add a line
 import requests
 from bs4 import BeautifulSoup
 
@@ -23,8 +21,28 @@ def report_updated(soup):
     
     return last_updated
 
-url = "https://www.ilmatieteenlaitos.fi/saa/espoo"
-soup = fetch_content(url)
-data = report_updated(soup)
+#does not work
+def latest_observations(soup):
+    latest = soup.find_all('div', class_='my-1 w-25 col-12 col-md-6')
+    
+    #out = []
+    #for element in latest:
+    #    out.append(element.text)
+    
+    return latest
+    
 
-print(data)
+if __name__ == "__main__":
+    url = "https://www.ilmatieteenlaitos.fi/saa/espoo"
+    soup = fetch_content(url)
+    data = report_updated(soup)
+
+    print(data)
+    
+    url = "https://en.ilmatieteenlaitos.fi/local-weather/espoo"
+    soup = fetch_content(url)
+    data = report_updated(soup)
+
+    print(data)    
+    
+    
