@@ -14,8 +14,8 @@ soup = soup.find("div", {"id": "posterlist"})
 movies = []
 
 for movie in soup.find_all("a", {'class': 'row posterlistbox'}):
-   title = movie('h1')
-   text = movie("div", {'class': 'posterlist-text'})
+   title = movie.find('h1').get_text(strip=True)
+   text = movie.find("div", {'class': 'posterlist-text'}).get_text(strip=True)
 
    
 
