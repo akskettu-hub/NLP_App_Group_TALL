@@ -156,6 +156,29 @@ print(td_matrix[t2i[input]])
 
 # 2.Your search application should print the contents of the retrieved documents. (A vector consisting of ones and zeros won't do!) If there are too many matching documents, maybe you want to show only the top n documents. (Still you could print out how many matching documents there are in total.) If the documents are long, maybe you want to truncate the output to the m first words or characters only. Type your code here: 
 
+# Akseli's notes: These two functions do the following. retrieve_matches() takes the query string and returns a hit list of found matches using the functions defined in the course material. Function print_retrieved() takes this hit list and prints the contents of the documents that matched. The variable print limit determines how many search results we want to print. In future we might add a feature that only prints a certain number of character's but since I'm just using the documents in the course materials, it's not a problem currently. It can easily be altered later.
+
+def retrieve_matches(query):
+    hits_matrix = eval(rewrite_query(query))
+    hits_list = list(hits_matrix.nonzero()[1])
+    return hits_list
+        
+def print_retrieved(hits_list):
+    print(f"Found {len(hits_list)} matches:")
+    
+    print_limit = 2
+    
+    if len(hits_list) > print_limit:
+        print(f"Here are the first {print_limit} results:")
+        
+        e_list = list(enumerate(hits_list))
+        for i in range(print_limit):
+            print("Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]]))
+                
+    else:        
+        for i, doc_idx in enumerate(hits_list):
+            print("Matching doc #{:d}: {:s}".format(i, documents[doc_idx]))
+
 # 3. If you just copy the code from the tutorial, your program will crash if you enter a word (term) that does not occur in any document in the collection. Modify your program to work correctly also in the case that a term is unknown. Type your code here: 
 
 # 4. Have you noticed that not all words in the toy data were actually indexed by the code in the tutorial? Which ones? Would you like to index all words containing alpha-numerical characters? Can you solve that? Type your code here: 
