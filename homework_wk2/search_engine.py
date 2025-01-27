@@ -183,6 +183,25 @@ def print_retrieved(hits_list):
 
 # 4. Have you noticed that not all words in the toy data were actually indexed by the code in the tutorial? Which ones? Would you like to index all words containing alpha-numerical characters? Can you solve that? Type your code here: 
 
-# 5. This task is important. You need to index some "real" documents from a text file. When you run your program, it should start by reading document contents from a file and index these documents. After this, the user should be able to type queries and retrieve matching documents. Initially, you can use our example data sets: One contains 100 articles extracted from English Wikipedia and the other contains 1000 articles extracted from English Wikipedia (with topics mostly starting with the letter A). When you read these files, you need to produce a list of strings, such that an entire article (document) is in one string. You can locate the boundaries between two articles from the </article> tag, which always occurs on a line of its own in the file. The text is UTF-8 encoded. Type your code here: 
+# 5. This task is important. You need to index some "real" documents from a text file. When you run your program, it should start by reading document contents from a file and index these documents. After this, the user should be able to type queries and retrieve matching documents. Initially, you can use our example data sets: One contains 100 articles extracted from English Wikipedia and the other contains 1000 articles extracted from English Wikipedia (with topics mostly starting with the letter A). When you read these files, you need to produce a list of strings, such that an entire article (document) is in one string. You can locate the boundaries between two articles from the </article> tag, which always occurs on a line of its own in the file. The text is UTF-8 encoded. Type your code here:
+
+# Akseli's notes: this function takes a file and outputs list of strings where each string is an article. This can then be used as the "documents" of the programme. Word of warning: if you are going to use those wiki files to test be aware that especially the 1000 article one is rather large. 
+
+import re
+
+def extract_articles(file):
+    with open(file, 'r', encoding='utf-8') as f:
+        text = f.read()
+        
+    articles = text.split("</article>")
+    cleaned = []
+    for article in articles:
+        
+        cleaned.append(re.sub(r"<.*>", "", article))
+        
+    return cleaned
+
+small = "wiki_files/enwiki-20181001-corpus.100-articles.txt"
+large = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
 
 # 6. If you like, you can use some other data, for instance a Wikipedia dump for some other language, such as Finnish: https://linguatools.org/tools/corpora/wikipedia-monolingual-corpora/. First you need to download a Wikipedia XML file. Then you need to uncompress it with bunzip2. Then you need to convert the XML format to plain text using the Perl script xml2txt.pl, which is available for download on the web page. You need to use the option -articles in order to preserve the article tags: perl xml2txt.pl -articles INPUT_FILE.xml OUTPUT_FILE.txt. Type your code here: 
