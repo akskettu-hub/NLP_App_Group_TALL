@@ -154,6 +154,7 @@ for i, doc_idx in enumerate(hits_list):
 input = input("Please type in one of the following words: and, better, example, great, here, is, long, nothing, see, silly, this, to: ")
 print(td_matrix[t2i[input]])
 
+
 # 2.Your search application should print the contents of the retrieved documents. (A vector consisting of ones and zeros won't do!) If there are too many matching documents, maybe you want to show only the top n documents. (Still you could print out how many matching documents there are in total.) If the documents are long, maybe you want to truncate the output to the m first words or characters only. Type your code here: 
 
 # Akseli's notes: These two functions do the following. retrieve_matches() takes the query string and returns a hit list of found matches using the functions defined in the course material. Function print_retrieved() takes this hit list and prints the contents of the documents that matched. The variable print limit determines how many search results we want to print. In future we might add a feature that only prints a certain number of character's but since I'm just using the documents in the course materials, it's not a problem currently. It can easily be altered later.
@@ -182,6 +183,16 @@ def print_retrieved(hits_list):
 # 3. If you just copy the code from the tutorial, your program will crash if you enter a word (term) that does not occur in any document in the collection. Modify your program to work correctly also in the case that a term is unknown. Type your code here: 
 
 # 4. Have you noticed that not all words in the toy data were actually indexed by the code in the tutorial? Which ones? Would you like to index all words containing alpha-numerical characters? Can you solve that? Type your code here: 
+
+# Answer (issue #15): The most likely reason why not all words are indexed is the default token pattern used by CountVectorizer: r'\b\w\w+\b' This pattern only matches words with two or more alphanumeric characters. Solution: 
+
+cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'\b\w+\b')
+sparse_matrix = cv.fit_transform(documents)
+dense_matrix = sparse_matrix.todense()
+td_matrix = dense_matrix.T 
+
+print("\nIDX -> terms mapping:\n")
+print(cv.get_feature_names_out())
 
 # 5. This task is important. You need to index some "real" documents from a text file. When you run your program, it should start by reading document contents from a file and index these documents. After this, the user should be able to type queries and retrieve matching documents. Initially, you can use our example data sets: One contains 100 articles extracted from English Wikipedia and the other contains 1000 articles extracted from English Wikipedia (with topics mostly starting with the letter A). When you read these files, you need to produce a list of strings, such that an entire article (document) is in one string. You can locate the boundaries between two articles from the </article> tag, which always occurs on a line of its own in the file. The text is UTF-8 encoded. Type your code here:
 
