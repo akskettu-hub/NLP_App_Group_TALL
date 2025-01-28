@@ -182,6 +182,41 @@ def print_retrieved(hits_list):
 
 # 3. If you just copy the code from the tutorial, your program will crash if you enter a word (term) that does not occur in any document in the collection. Modify your program to work correctly also in the case that a term is unknown. Type your code here: 
 
+### This part of the code is originally in homework_wk2/w2_loop_and_unknown.ipynb
+import numpy as np
+
+def avoid_operators(t):
+   if t in d:
+       return d[t]
+   if t not in t2i:
+       return 'np.zeros((1, len(documents)), dtype=int)'
+   
+   return f'td_matrix[{t2i[t]}]'
+
+def rewrite_query(query):
+   return " ".join(avoid_operators(t) for t in query.split())
+
+def loop():
+   while True:
+       user_query = input("Please Enter your query, type 'quit' to exit: ")
+       if user_query == "quit":
+           print("Exit")
+           break
+       hits_matrix = eval(rewrite_query(user_query))
+       
+###    print("Matching documents as vector (it is actually a matrix with one single row):", hits_matrix)
+###    print("The coordinates of the non-zero elements:", hits_matrix.nonzero())  
+       
+       hits_list = list(hits_matrix.nonzero()[1])
+       if not hits_list:  
+           print("No matching document")
+       else:
+           for doc_idx in hits_list:
+               print("Matching doc:", documents[int(doc_idx)]) 
+
+### Uncomment to call the loop function:
+### loop()
+
 # 4. Have you noticed that not all words in the toy data were actually indexed by the code in the tutorial? Which ones? Would you like to index all words containing alpha-numerical characters? Can you solve that? Type your code here: 
 
 # Answer (issue #15): The most likely reason why not all words are indexed is the default token pattern used by CountVectorizer: r'\b\w\w+\b' This pattern only matches words with two or more alphanumeric characters. Solution: 
