@@ -7,19 +7,19 @@ example_documents = ["This is a silly example",
              "Nothing to see here",
              "This is a great and long example"]
 
-# 4 The most likely reason why not all words are indexed is the default token pattern used by CountVectorizer: r'\b\w\w+\b' This pattern only matches words with two or more alphanumeric characters. See changed token_pattern when initalizing CountVectorizer at the top of the page
-
 d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
      "not": "1 -", "NOT": "1 -",
      "(": "(", ")": ")"}          # operator replacements
 
+# 4 The most likely reason why not all words are indexed is the default token pattern used by CountVectorizer: r'\b\w\w+\b' This pattern only matches words with two or more alphanumeric characters. See changed token_pattern when initalizing CountVectorizer at the top of the page
 def document_setup(documents):
     cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'\b\w+\b') ### changed token_pattern as part of homework #4
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
     td_matrix = dense_matrix.T
     t2i = cv.vocabulary_ 
+    
     return (td_matrix, t2i)
 
 # 5
@@ -38,11 +38,14 @@ def extract_wiki_articles(file):
 small_wiki = "wiki_files/enwiki-20181001-corpus.100-articles.txt"
 large_wiki = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
 
+#a se
 def user_document_select():
     pass
 
 def user_query():
+    print()
     user_input = input("Please Enter your query, type 'quit' to exit: ")
+    print()
     return user_input
 
 #Modification of former rewrite_token() from course material that handles words not in documents
@@ -74,18 +77,22 @@ def print_retrieved(hits_list):
     else:
         print(f"Found {len(hits_list)} matches:")
         
-        print_limit = 2
+        print_limit = 2 # Determines max number of lines printed
+         # Determines max length of printout per line
         
         if len(hits_list) > print_limit:
             print(f"Here are the first {print_limit} results:")
             
             e_list = list(enumerate(hits_list))
             for i in range(print_limit):
-                print("Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]]))
+                print()
+                print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line
+                
                     
         else:        
             for i, doc_idx in enumerate(hits_list):
-                print("Matching doc #{:d}: {:s}".format(i, documents[doc_idx]))
+                print()
+                print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
             
 def main():
     while True:
@@ -100,8 +107,8 @@ def main():
                 
 
 if __name__ == "__main__":
-    documents = example_documents
-    setup = document_setup(documents)
+    documents = extract_wiki_articles(small_wiki) # Assign whatever list of strings you want to use as documents here, 
+    setup = document_setup(documents) 
     td_matrix = setup[0]
     t2i = setup[1]
     main()
