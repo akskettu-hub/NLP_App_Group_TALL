@@ -2,31 +2,28 @@ from sklearn.feature_extraction.text import CountVectorizer
 import numpy as np
 import re
 
-documents = ["This is a silly example",
+example_documents = ["This is a silly example",
              "A better example",
              "Nothing to see here",
              "This is a great and long example"]
 
 # 4 The most likely reason why not all words are indexed is the default token pattern used by CountVectorizer: r'\b\w\w+\b' This pattern only matches words with two or more alphanumeric characters. See changed token_pattern when initalizing CountVectorizer at the top of the page
 
-cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'\b\w+\b') ### changed token_pattern as part of homework #4
-sparse_matrix = cv.fit_transform(documents)
-
-#print a dense version of this matrix
-dense_matrix = sparse_matrix.todense()
-
-#transpose the matrix, so that the rows and columns change places
-td_matrix = dense_matrix.T   # .T transposes the matrix
-
-t2i = cv.vocabulary_ 
-
 d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
      "not": "1 -", "NOT": "1 -",
      "(": "(", ")": ")"}          # operator replacements
 
+def document_setup(documents):
+    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'\b\w+\b') ### changed token_pattern as part of homework #4
+    sparse_matrix = cv.fit_transform(documents)
+    dense_matrix = sparse_matrix.todense()
+    td_matrix = dense_matrix.T
+    t2i = cv.vocabulary_ 
+    return (td_matrix, t2i)
+
 # 5
-def extract_articles(file):
+def extract_wiki_articles(file):
     with open(file, 'r', encoding='utf-8') as f:
         text = f.read()
         
@@ -38,8 +35,11 @@ def extract_articles(file):
         
     return cleaned_articles
 
-small = "wiki_files/enwiki-20181001-corpus.100-articles.txt"
-large = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
+small_wiki = "wiki_files/enwiki-20181001-corpus.100-articles.txt"
+large_wiki = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
+
+def user_document_select():
+    pass
 
 def user_query():
     user_input = input("Please Enter your query, type 'quit' to exit: ")
@@ -89,6 +89,9 @@ def print_retrieved(hits_list):
             
 def main():
     while True:
+        #ask user what document they want to use.
+        #set up documents as "documents"
+        
         user_input = user_query()
         if input_checker(user_input) == False:
             break
@@ -97,4 +100,8 @@ def main():
                 
 
 if __name__ == "__main__":
+    documents = example_documents
+    setup = document_setup(documents)
+    td_matrix = setup[0]
+    t2i = setup[1]
     main()
