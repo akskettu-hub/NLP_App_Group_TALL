@@ -7,6 +7,9 @@ example_documents = ["This is a silly example",
              "Nothing to see here",
              "This is a great and long example"]
 
+small_wiki = "wiki_files/enwiki-20181001-corpus.100-articles.txt"
+large_wiki = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
+
 d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
      "not": "1 -", "NOT": "1 -",
@@ -35,10 +38,7 @@ def extract_wiki_articles(file):
         
     return cleaned_articles
 
-small_wiki = "wiki_files/enwiki-20181001-corpus.100-articles.txt"
-large_wiki = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
-
-#a se
+#a function that asks user what document they want to use. 
 def user_document_select():
     pass
 
@@ -78,7 +78,6 @@ def print_retrieved(hits_list):
         print(f"Found {len(hits_list)} matches:")
         
         print_limit = 2 # Determines max number of lines printed
-         # Determines max length of printout per line
         
         if len(hits_list) > print_limit:
             print(f"Here are the first {print_limit} results:")
@@ -96,8 +95,6 @@ def print_retrieved(hits_list):
             
 def main():
     while True:
-        #ask user what document they want to use.
-        #set up documents as "documents"
         
         user_input = user_query()
         if input_checker(user_input) == False:
@@ -107,7 +104,8 @@ def main():
                 
 
 if __name__ == "__main__":
-    documents = extract_wiki_articles(small_wiki) # Assign whatever list of strings you want to use as documents here, 
+    documents = extract_wiki_articles(small_wiki) # Assign whatever list of strings you want to use as documents to this variable, comment this line if you don't want to use the small wiki
+    #documents = example_documents # uncomment this line to use example_documents
     setup = document_setup(documents) 
     td_matrix = setup[0]
     t2i = setup[1]
