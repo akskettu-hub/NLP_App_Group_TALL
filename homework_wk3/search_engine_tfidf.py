@@ -168,7 +168,7 @@ if __name__ == "__main__":
 
 
     ### These paths only work if you run the program from the same directory with the wiki_files folder. 
-    small_wiki = "/Users/liisa/Documents/Python/NPA Apps 2025/NLP_App_Group_TALL/homework_wk2/wiki_files/enwiki-20181001-corpus.100-articles.txt" 
+    small_wiki = "wiki_files/enwiki-20181001-corpus.100-articles.txt" 
     # large_wiki = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
 
     # documents = extract_wiki_articles(small_wiki) # Assign whatever list of strings you want to use as documents to this variable, comment this line if you don't want to use the small wiki
