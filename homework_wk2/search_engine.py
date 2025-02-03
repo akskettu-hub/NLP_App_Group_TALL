@@ -7,8 +7,8 @@ example_documents = ["This is a silly example",
              "Nothing to see here",
              "This is a great and long example"]
 
-small_wiki = "wiki_files/enwiki-20181001-corpus.100-articles.txt"
-large_wiki = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
+small_wiki = "../wiki_files/enwiki-20181001-corpus.100-articles.txt"
+large_wiki = "../wiki_files/enwiki-20181001-corpus.1000-articles.txt"
 
 d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
