@@ -59,12 +59,16 @@ def user_document_select():
 def user_query():
     print()
     user_input = input("Please Enter your query, type 'quit' to exit: ")
-    print()
     return user_input
 
+def input_checker(user_input):
+    if user_input == "quit" or user_input == "":
+           print("Exit")
+           return False
+       
 #Modification of former rewrite_token() from course material that handles words not in documents
 # check t2i variable: refers to a variable that is only in the main function
-def avoid_operators(t):
+def avoid_operators(t, t2i):
    if t in d:
        return d[t]
    if t not in t2i:
@@ -72,29 +76,25 @@ def avoid_operators(t):
    
    return f'td_matrix[{t2i[t]}]'
 
-def rewrite_query(query):
-   return " ".join(avoid_operators(t) for t in query.split())
+def rewrite_query(query, t2i):
+   return " ".join(avoid_operators(t, t2i) for t in query.split())
 
-def input_checker(user_input):
-    if user_input == "quit" or user_input == "":
-           print("Exit")
-           return False
+def retrieve_matches(query, documents, td_matrix, t2i):
+    hits_matrix = eval(rewrite_query(query, t2i))
+    hits_list = list(hits_matrix.nonzero()[1])
+    return hits_list
 
 ### w 3 part 1, optional
 def boolean_or_tfidf():
     """determines whether to use boolean search or tfidf-based search"""
     pass
-
-def retrieve_matches(query):
-    hits_matrix = eval(rewrite_query(query))
-    hits_list = list(hits_matrix.nonzero()[1])
-    return hits_list
         
-def print_retrieved(hits_list):
+def print_retrieved(hits_list, documents):
     if not hits_list:  
            print("No matching document")
            
     else:
+        print()
         print(f"Found {len(hits_list)} matches:")
         
         print_limit = 2 # Determines max number of lines printed
@@ -105,24 +105,35 @@ def print_retrieved(hits_list):
             e_list = list(enumerate(hits_list))
             for i in range(print_limit):
                 print()
-                print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line
-                
+                print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line   
                     
         else:        
             for i, doc_idx in enumerate(hits_list):
                 print()
                 print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
 
-
 ### comment: the main function's structure is pretty much of (function(function(a))), which makes it difficult to follow
 ### response, by Akseli: I do not agree that it's difficult to follow, but then I did write it and this tends to be my preference for organising main functions. I do feel the functions and variables are quite clearly labled and the logic is not complicated. Using functions like this also allows the expansion of functionality without having to touch, or clutter main() all that much, and to have that functionality be portable, should it be applicable to some other issue. For example, if we want to check for somehting other than just the word quit "quit", we can just add it to the input_checker() function. The main logic of the programme in general does not need to know which conditions trigger an exit, it just gets told to exit. I, for example, wanted the programme to exit on an empty input as well as "quit", as it makes testing slightly less cumbersome, and also it means we don't have to account for what to do with an empty query. The point of main(), to me, is to be the overall layout of the programme as it runs, with as little specifis as possible.
 def main():
+    ### DOCUMENTS: Use the documents variable to determine which data you want to use. Please do not change documents variable elsewhere.
+    documents = extract_wiki_articles(small_wiki) # Assign whatever list of strings you want to use as documents to this variable, comment this line if you don't want to use the small wiki
+    #documents = extract_wiki_articles(large_wiki) # Assign whatever list of strings you want to use as documents to this variable, comment this line if you don't want to use the large_wiki
+    # documents = example_documents # uncomment this line to use example_documents
+    ### END OF DOCUMENTS:
+    
+    ### SETUP
+    setup = document_setup(documents)
+    # setup = get_tfidf(documents)
+    td_matrix = setup[0]
+    t2i = setup[1]
+    ### END OF SETUP
+    
     while True:
         user_input = user_query()
         if input_checker(user_input) == False:
             break
-        hits_list = retrieve_matches(user_input)
-        print_retrieved(hits_list)
+        hits_list = retrieve_matches(user_input, documents, td_matrix, t2i)
+        print_retrieved(hits_list, documents)
 
 ### comment: the main function could be written in a more functional fashion (=! object oriented) which would
 ### response, by Akseli: I do not see that this is in any practical sense a better solution. The programme being this small, there is little difference between these two versions as regrads what these main functions actually do, but with a more a more functional approach (as in, the main() function is a function that runs the programme which is a series of functions) to organising a programme like this, we can add and modify functions as we please, which will make things easier as the programme gets more complicated. In addition to my comment to the main() function, this is a good example for why I prefer my way. The user_query() function, in addition to simply asking input, also adds some empty lines to make it more readable on the command line. We can modify this function with various formatting, for example, without cluttering the main() function.
@@ -141,8 +152,6 @@ def new_main():
 
 
 if __name__ == "__main__":
-
-
 ### DATA: I moved these variables here as the program is supposed to work with any data - Liisa
 
     example_documents = ["This is a silly example",
@@ -150,21 +159,11 @@ if __name__ == "__main__":
                 "Nothing to see here",
                 "This is a great and long example"]
 
-
     ### These paths only work if you run the program from the same directory with the wiki_files folder. 
+    # Akseli: fixed. Now point to parent folder and should be accessible from anywhere.
     small_wiki = "../wiki_files/enwiki-20181001-corpus.100-articles.txt" 
-    # large_wiki = "wiki_files/enwiki-20181001-corpus.1000-articles.txt"
-
-    # documents = extract_wiki_articles(small_wiki) # Assign whatever list of strings you want to use as documents to this variable, comment this line if you don't want to use the small wiki
-    documents = example_documents # uncomment this line to use example_documents
+    large_wiki = "../wiki_files/enwiki-20181001-corpus.1000-articles.txt"
 
 ### END OF DATA
-
-    ### These variables are referred to in some functions, so they need to be declared earlier if they are needed
-    setup = document_setup(example_documents) 
-    # setup = get_tfidf(example_documents)
-    
-    td_matrix = setup[0]
-    t2i = setup[1]
     
     main()
