@@ -20,6 +20,20 @@ def wildcard(string:str):
 
 # 4 The most likely reason why not all words are indexed is the default token pattern used by CountVectorizer: r'\b\w\w+\b' This pattern only matches words with two or more alphanumeric characters. See changed token_pattern when initalizing CountVectorizer at the top of the page
 
+# 5
+def extract_wiki_articles(file: str): 
+    """returns a list of strings"""
+    with open(file, 'r', encoding='utf-8') as f:
+        text = f.read()
+        
+    articles = text.split("</article>")
+    cleaned_articles = []
+    for article in articles:
+        
+        cleaned_articles.append(re.sub(r"<.*>", "", article))
+        
+    return cleaned_articles
+
 ### document setup with CountVectorizer
 def document_setup(documents: list):
     """Returns a tuple with the term-document matrix and the vocabulary"""
@@ -38,20 +52,6 @@ def get_tfidf(documents: list):
     matrix = tfv.fit_transform(documents).todense().T
     return matrix, tfv.vocabulary_
 
-# 5
-def extract_wiki_articles(file: str): 
-    """returns a list of strings"""
-    with open(file, 'r', encoding='utf-8') as f:
-        text = f.read()
-        
-    articles = text.split("</article>")
-    cleaned_articles = []
-    for article in articles:
-        
-        cleaned_articles.append(re.sub(r"<.*>", "", article))
-        
-    return cleaned_articles
-
 #a function that asks user what document they want to use. 
 def user_document_select():
     pass
@@ -65,6 +65,7 @@ def input_checker(user_input):
     if user_input == "quit" or user_input == "":
            print("Exit")
            return False
+    return True
        
 #Modification of former rewrite_token() from course material that handles words not in documents
 # check t2i variable: refers to a variable that is only in the main function
@@ -150,6 +151,63 @@ def new_main():
         #    print(results)
             pass
 
+### TF-IDF AND COSINE SIMILARITY FUNCTIONS         
+# Document setup using TfidfVectorizer
+def tf_document_setup(documents):
+    tfv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2") 
+    tf_matrix = tfv.fit_transform(documents).T.todense() 
+    return tfv, tf_matrix
+
+# Compute cosine similarity scores
+def retrieve_matches_tfidf(query, tfv, tf_matrix):
+    query_tf = tfv.transform([query]).todense()  # Convert query to tf-idf vector
+    scores = np.dot(query_tf, tf_matrix)  # Compute cosine similarity score
+    return scores
+
+#Doesn't currently work, please wait, Akseli is on the case
+def tf_print_retrieved(scores, documents):
+    if np.all(scores == 0):  
+        print("No matching document")
+    else:
+        print()
+        ranked_scores_and_doc_ids = sorted([(score, doc_idx) for doc_idx, score in enumerate(np.array(scores)[0]) if score > 0], reverse=True) # Rank the documents by similarity score
+        
+        print(f"Found {len(ranked_scores_and_doc_ids)} matches:")
+        
+        print_limit = 2  # Max number of results to display
+        #e_list = enumerate(ranked_scores_and_doc_ids)
+        
+        if len(ranked_scores_and_doc_ids) > print_limit:
+            print(f"Here are the first {print_limit} results:")
+        
+            for rank, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids[:print_limit]):
+                print()
+                print(f"{rank} - {score} - {i}")
+    
+        #        print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line   
+                    
+        #else:        
+        #    for i, doc_idx in enumerate(hits_list):
+        #        print()
+        #        print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
+        
+def tfidf_test():
+    #documents = ["This is a silly silly silly example",
+    #         "A better example",
+    #         "Nothing to see here nor here nor here",
+    #         "This is a great example and a long example too"]
+    small_wiki = "../wiki_files/enwiki-20181001-corpus.100-articles.txt"
+    documents = extract_wiki_articles(small_wiki)
+    tfv, tf_matrix  = tf_document_setup(documents)
+    
+    while True:
+        user_input = user_query()
+        if not input_checker(user_input):
+            break
+        scores = retrieve_matches_tfidf(user_input,tfv, tf_matrix)
+        tf_print_retrieved(scores, example_documents)
+### END OF TF-IDF AND COSINE SIMILARITY FUNCTIONS        
+
 
 if __name__ == "__main__":
 ### DATA: I moved these variables here as the program is supposed to work with any data - Liisa
@@ -167,3 +225,4 @@ if __name__ == "__main__":
 ### END OF DATA
     
     main()
+    #tfidf_test()
