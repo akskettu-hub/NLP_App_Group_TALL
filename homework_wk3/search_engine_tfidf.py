@@ -159,12 +159,12 @@ def tf_document_setup(documents):
     return tfv, tf_matrix
 
 # Compute cosine similarity scores
-def retrieve_matches_tfidf(query, tfv, tf_matrix):
+def tf_retrieve_matches(query, tfv, tf_matrix):
     query_tf = tfv.transform([query]).todense()  # Convert query to tf-idf vector
     scores = np.dot(query_tf, tf_matrix)  # Compute cosine similarity score
     return scores
 
-#Doesn't currently work, please wait, Akseli is on the case
+#Works to a limited extent: prints rank, score, and document id. Print formatting needs work. 
 def tf_print_retrieved(scores, documents):
     if np.all(scores == 0):  
         print("No matching document")
@@ -182,15 +182,16 @@ def tf_print_retrieved(scores, documents):
         
             for rank, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids[:print_limit]):
                 print()
-                print(f"{rank} - {score} - {i}")
-    
-        #        print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line   
+                print(f"{rank} - {score} - {doc_idx}") # Needs formatting
+                #print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line   
                     
-        #else:        
-        #    for i, doc_idx in enumerate(hits_list):
-        #        print()
-        #        print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
-        
+        else:        
+            for rank, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids):
+                print()
+                print(f"{rank} - {score} - {doc_idx}") # Needs formatting
+                #print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
+
+# this function works exactly like the main function, but uses tfidf functions in place of the boolean stuff, used for testing   
 def tfidf_test():
     #documents = ["This is a silly silly silly example",
     #         "A better example",
@@ -204,7 +205,7 @@ def tfidf_test():
         user_input = user_query()
         if not input_checker(user_input):
             break
-        scores = retrieve_matches_tfidf(user_input,tfv, tf_matrix)
+        scores = tf_retrieve_matches(user_input,tfv, tf_matrix)
         tf_print_retrieved(scores, example_documents)
 ### END OF TF-IDF AND COSINE SIMILARITY FUNCTIONS        
 
@@ -225,4 +226,4 @@ if __name__ == "__main__":
 ### END OF DATA
     
     main()
-    #tfidf_test()
+    #tfidf_test() # Comment main and uncomment this to test tf-idf
