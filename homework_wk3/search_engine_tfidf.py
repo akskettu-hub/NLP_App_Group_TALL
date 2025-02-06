@@ -190,8 +190,62 @@ def print_retrieved(hits_list, documents):
                 print()
                 print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
 
-### comment: the main function's structure is pretty much of (function(function(a))), which makes it difficult to follow
-### response, by Akseli: I do not agree that it's difficult to follow, but then I did write it and this tends to be my preference for organising main functions. I do feel the functions and variables are quite clearly labled and the logic is not complicated. Using functions like this also allows the expansion of functionality without having to touch, or clutter main() all that much, and to have that functionality be portable, should it be applicable to some other issue. For example, if we want to check for somehting other than just the word quit "quit", we can just add it to the input_checker() function. The main logic of the programme in general does not need to know which conditions trigger an exit, it just gets told to exit. I, for example, wanted the programme to exit on an empty input as well as "quit", as it makes testing slightly less cumbersome, and also it means we don't have to account for what to do with an empty query. The point of main(), to me, is to be the overall layout of the programme as it runs, with as little specifis as possible.
+### TF-IDF AND COSINE SIMILARITY FUNCTIONS         
+# Document setup using TfidfVectorizer
+def tf_document_setup(documents):
+    tfv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2") 
+    tf_matrix = tfv.fit_transform(documents).T.todense() 
+    return tfv, tf_matrix
+
+# Compute cosine similarity scores
+def tf_retrieve_matches(query, tfv, tf_matrix):
+    query_tf = tfv.transform([query]).todense()  # Convert query to tf-idf vector
+    scores = np.dot(query_tf, tf_matrix)  # Compute cosine similarity score
+    return scores
+
+#Now works. If you feel like the printout should be something better, feel free to change it.
+def tf_print_retrieved(scores, documents):
+    if np.all(scores == 0):  
+        print("No matching document")
+    else:
+        print()
+        ranked_scores_and_doc_ids = sorted([(score, doc_idx) for doc_idx, score in enumerate(np.array(scores)[0]) if score > 0], reverse=True) # Rank the documents by similarity score
+        
+        print(f"Found {len(ranked_scores_and_doc_ids)} matches:")
+        
+        print_limit = 2  # Max number of results to display
+        
+        
+        if len(ranked_scores_and_doc_ids) > print_limit:
+            print(f"Here are the first {print_limit} results, ranked by relevance:")
+        
+            for rank, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids[:print_limit]):
+                print()
+                print('%.250s' % f"Best matching doc #{rank + 1}: {documents[doc_idx]}") # '%.250s' Number here determines max length of printout per line   
+                    
+        else:        
+            for rank, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids):
+                print()
+                print('%.250s' % f"Best matching doc #{rank + 1}: {documents[doc_idx]}") # '%.250s' Number here determines max length of printout per line 
+
+# this function works exactly like the main function, but uses tfidf functions in place of the boolean stuff, used for testing   
+def tfidf_test():
+    #documents = ["This is a silly silly silly example",
+    #         "A better example",
+    #         "Nothing to see here nor here nor here",
+    #         "This is a great example and a long example too"]
+    small_wiki = "../wiki_files/enwiki-20181001-corpus.100-articles.txt"
+    documents = extract_wiki_articles(small_wiki)
+    tfv, tf_matrix  = tf_document_setup(documents)
+    
+    while True:
+        user_input = user_query()
+        if not input_checker(user_input):
+            break
+        scores = tf_retrieve_matches(user_input,tfv, tf_matrix)
+        tf_print_retrieved(scores, documents)
+### END OF TF-IDF AND COSINE SIMILARITY FUNCTIONS        
+
 def main():
     ### DOCUMENTS: Use the documents variable to determine which data you want to use. Please do not change documents variable elsewhere.
     documents = extract_wiki_articles(small_wiki) # Assign whatever list of strings you want to use as documents to this variable, comment this line if you don't want to use the small wiki
@@ -209,82 +263,11 @@ def main():
         user_input = user_query()
         if input_checker(user_input) == False:
             break
-        hits_list = retrieve_matches(user_input, documents, td_matrix_stem, t2i_stem,                                  td_matrix_exact, t2i_exact)
+        hits_list = retrieve_matches(user_input, documents,
+                                     td_matrix_stem, t2i_stem,
+                                     td_matrix_exact, t2i_exact
+                                     )
         print_retrieved(hits_list, documents)
-
-### comment: the main function could be written in a more functional fashion (=! object oriented) which would
-### response, by Akseli: I do not see that this is in any practical sense a better solution. The programme being this small, there is little difference between these two versions as regrads what these main functions actually do, but with a more a more functional approach (as in, the main() function is a function that runs the programme which is a series of functions) to organising a programme like this, we can add and modify functions as we please, which will make things easier as the programme gets more complicated. In addition to my comment to the main() function, this is a good example for why I prefer my way. The user_query() function, in addition to simply asking input, also adds some empty lines to make it more readable on the command line. We can modify this function with various formatting, for example, without cluttering the main() function.
-def new_main():
-    while True:
-    #   data = analyze_data(data) > analyze data here so it doesn't have to be done every time
-    # response, by Akseli: This seems incorrect to me. If placed here, it's in the loop, so it will get done every time anyway, and it's before user input, which means it's done even when the user intends to quit. In main(), data only gets analysed if it has to be.
-        user_input = input("Please Enter your query, type 'quit' to exit: ")
-        if user_input == "quit":
-            print("Exit")
-            break
-        else: 
-         #   results = retrieve_matches(user_input, data)
-        #    print(results)
-            pass
-
-### TF-IDF AND COSINE SIMILARITY FUNCTIONS         
-# Document setup using TfidfVectorizer
-def tf_document_setup(documents):
-    tfv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2") 
-    tf_matrix = tfv.fit_transform(documents).T.todense() 
-    return tfv, tf_matrix
-
-# Compute cosine similarity scores
-def tf_retrieve_matches(query, tfv, tf_matrix):
-    query_tf = tfv.transform([query]).todense()  # Convert query to tf-idf vector
-    scores = np.dot(query_tf, tf_matrix)  # Compute cosine similarity score
-    return scores
-
-#Works to a limited extent: prints rank, score, and document id. Print formatting needs work. 
-def tf_print_retrieved(scores, documents):
-    if np.all(scores == 0):  
-        print("No matching document")
-    else:
-        print()
-        ranked_scores_and_doc_ids = sorted([(score, doc_idx) for doc_idx, score in enumerate(np.array(scores)[0]) if score > 0], reverse=True) # Rank the documents by similarity score
-        
-        print(f"Found {len(ranked_scores_and_doc_ids)} matches:")
-        
-        print_limit = 2  # Max number of results to display
-        #e_list = enumerate(ranked_scores_and_doc_ids)
-        
-        if len(ranked_scores_and_doc_ids) > print_limit:
-            print(f"Here are the first {print_limit} results:")
-        
-            for rank, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids[:print_limit]):
-                print()
-                print(f"{rank} - {score} - {doc_idx}") # Needs formatting
-                #print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line   
-                    
-        else:        
-            for rank, (score, doc_idx) in enumerate(ranked_scores_and_doc_ids):
-                print()
-                print(f"{rank} - {score} - {doc_idx}") # Needs formatting
-                #print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
-
-# this function works exactly like the main function, but uses tfidf functions in place of the boolean stuff, used for testing   
-def tfidf_test():
-    #documents = ["This is a silly silly silly example",
-    #         "A better example",
-    #         "Nothing to see here nor here nor here",
-    #         "This is a great example and a long example too"]
-    small_wiki = "../wiki_files/enwiki-20181001-corpus.100-articles.txt"
-    documents = extract_wiki_articles(small_wiki)
-    tfv, tf_matrix  = tf_document_setup(documents)
-    
-    while True:
-        user_input = user_query()
-        if not input_checker(user_input):
-            break
-        scores = tf_retrieve_matches(user_input,tfv, tf_matrix)
-        tf_print_retrieved(scores, example_documents)
-### END OF TF-IDF AND COSINE SIMILARITY FUNCTIONS        
-
 
 if __name__ == "__main__":
 ### DATA: I moved these variables here as the program is supposed to work with any data - Liisa
