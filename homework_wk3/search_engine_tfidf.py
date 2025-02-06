@@ -244,7 +244,7 @@ def main():
         if input_checker(user_input) == False:
             break
         if user_input[:2] == "-r":
-            user_input = user_input[2:]
+            user_input = user_input[3:]
             scores = tf_retrieve_matches(user_input,tfv, tf_matrix)
             tf_print_retrieved(scores, documents)
             
