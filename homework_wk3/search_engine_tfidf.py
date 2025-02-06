@@ -73,12 +73,9 @@ def get_tfidf(documents: list):
     matrix = tfv.fit_transform(documents).todense().T
     return matrix, tfv.vocabulary_
 
-#a function that asks user what document they want to use. 
-def user_document_select():
-    pass
-
 def user_query():
     print()
+    print("Type '-r' to search by relevance.")
     user_input = input("Please Enter your query, type 'quit' to exit: ")
     return user_input
 
@@ -127,7 +124,6 @@ def rewrite_query(query, t2i_stem, t2i_exact):
                     token_expressions.append(f'td_matrix_stem[{t2i_stem[stemmed]}]')
     return " ".join(token_expressions)
        
-#Modification of former rewrite_token() from course material that handles words not in documents
 # check t2i variable: refers to a variable that is only in the main function
 
 # OLD: avoid_operators and rewrite_query functions are replaced by the above
@@ -161,11 +157,6 @@ def retrieve_matches(query, documents, td_matrix_stem, t2i_stem, td_matrix_exact
         return []
     hits_list = list(hits_matrix.nonzero()[1])
     return hits_list
-
-### w 3 part 1, optional
-def boolean_or_tfidf():
-    """determines whether to use boolean search or tfidf-based search"""
-    pass
         
 def print_retrieved(hits_list, documents):
     if not hits_list:  
@@ -183,12 +174,12 @@ def print_retrieved(hits_list, documents):
             e_list = list(enumerate(hits_list))
             for i in range(print_limit):
                 print()
-                print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0], documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line   
+                print('%.250s' % "Matching doc #{:d}: {:s}".format(e_list[i][0] + 1, documents[e_list[i][1]])) # '%.250s' Number here determines max length of printout per line   
                     
         else:        
             for i, doc_idx in enumerate(hits_list):
                 print()
-                print( '%.250s' % "Matching doc #{:d}: {:s}".format(i, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
+                print( '%.250s' % "Matching doc #{:d}: {:s}".format(i + 1, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
 
 ### TF-IDF AND COSINE SIMILARITY FUNCTIONS         
 # Document setup using TfidfVectorizer
@@ -206,15 +197,14 @@ def tf_retrieve_matches(query, tfv, tf_matrix):
 #Now works. If you feel like the printout should be something better, feel free to change it.
 def tf_print_retrieved(scores, documents):
     if np.all(scores == 0):  
-        print("No matching document")
+        print("No relevant document")
     else:
         print()
         ranked_scores_and_doc_ids = sorted([(score, doc_idx) for doc_idx, score in enumerate(np.array(scores)[0]) if score > 0], reverse=True) # Rank the documents by similarity score
         
-        print(f"Found {len(ranked_scores_and_doc_ids)} matches:")
+        print(f"Found {len(ranked_scores_and_doc_ids)} relevant matches:")
         
         print_limit = 2  # Max number of results to display
-        
         
         if len(ranked_scores_and_doc_ids) > print_limit:
             print(f"Here are the first {print_limit} results, ranked by relevance:")
@@ -228,22 +218,6 @@ def tf_print_retrieved(scores, documents):
                 print()
                 print('%.250s' % f"Best matching doc #{rank + 1}: {documents[doc_idx]}") # '%.250s' Number here determines max length of printout per line 
 
-# this function works exactly like the main function, but uses tfidf functions in place of the boolean stuff, used for testing   
-def tfidf_test():
-    #documents = ["This is a silly silly silly example",
-    #         "A better example",
-    #         "Nothing to see here nor here nor here",
-    #         "This is a great example and a long example too"]
-    small_wiki = "../wiki_files/enwiki-20181001-corpus.100-articles.txt"
-    documents = extract_wiki_articles(small_wiki)
-    tfv, tf_matrix  = tf_document_setup(documents)
-    
-    while True:
-        user_input = user_query()
-        if not input_checker(user_input):
-            break
-        scores = tf_retrieve_matches(user_input,tfv, tf_matrix)
-        tf_print_retrieved(scores, documents)
 ### END OF TF-IDF AND COSINE SIMILARITY FUNCTIONS        
 
 def main():
@@ -257,17 +231,26 @@ def main():
     # Build two indices: one for stemming (non-exact tokens) and one for exact matches.
     td_matrix_stem, t2i_stem = document_setup_stem(documents)
     td_matrix_exact, t2i_exact = document_setup_exact(documents)
+    
+    # setup for TF-IDF AND COSINE SIMILARITY FUNCTIONS
+    tfv, tf_matrix  = tf_document_setup(documents)
     ### END OF SETUP
     
     while True:
         user_input = user_query()
         if input_checker(user_input) == False:
             break
-        hits_list = retrieve_matches(user_input, documents,
-                                     td_matrix_stem, t2i_stem,
-                                     td_matrix_exact, t2i_exact
-                                     )
-        print_retrieved(hits_list, documents)
+        if user_input[:2] == "-r":
+            user_input = user_input[2:]
+            scores = tf_retrieve_matches(user_input,tfv, tf_matrix)
+            tf_print_retrieved(scores, documents)
+            
+        else:  
+            hits_list = retrieve_matches(user_input, documents,
+                                        td_matrix_stem, t2i_stem,
+                                        td_matrix_exact, t2i_exact
+                                        )
+            print_retrieved(hits_list, documents)
 
 if __name__ == "__main__":
 ### DATA: I moved these variables here as the program is supposed to work with any data - Liisa
@@ -285,4 +268,3 @@ if __name__ == "__main__":
 ### END OF DATA
     
     main()
-    #tfidf_test() # Comment main and uncomment this to test tf-idf
