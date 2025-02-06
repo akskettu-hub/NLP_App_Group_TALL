@@ -1,5 +1,7 @@
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-import numpy as np 
+from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer  # for tfidf functions later
+import numpy as np
 import re
 
 # Boolean search: Operators
@@ -8,6 +10,8 @@ d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
      "not": "1 -", "NOT": "1 -",
      "(": "(", ")": ")"}          # operator replacements
+
+stemmer = PorterStemmer()
 
 # d. Wildcard searches: Let the users search on incomplete terms, such as hous* (easiest) or *ing (similar to previous case) or h*ing (hardest). Read Chapter 3 of the book to learn more about this topic.
 ### comment: I get a "nothing to repeat at position 0" error when running this function 
@@ -34,16 +38,33 @@ def extract_wiki_articles(file: str):
         
     return cleaned_articles
 
+# 2a&b (Stemming & exact matches) 
+# NEW: Two Document Setup Functions
+
 ### document setup with CountVectorizer
-def document_setup(documents: list):
-    """Returns a tuple with the term-document matrix and the vocabulary"""
-    cv = CountVectorizer(lowercase=True, binary=True, token_pattern=r'\b\w+\b') ### changed token_pattern as part of homework #4
+# setup index with stemming (for tokens not enclosed in quotes)
+
+def document_setup_stem(documents: list):
+    cv = CountVectorizer(lowercase=True, tokenizer=stem_tokenizer, token_pattern=None, binary=True)
     sparse_matrix = cv.fit_transform(documents)
     dense_matrix = sparse_matrix.todense()
-    td_matrix = dense_matrix.T
-    t2i = cv.vocabulary_ 
-    
-    return (td_matrix, t2i)
+    td_matrix = dense_matrix.T  # rows represent tokens
+    t2i = cv.vocabulary_
+    return td_matrix, t2i
+
+# setup index without stemming (for exact-match tokens in quotes)
+def document_setup_exact(documents: list):
+    cv = CountVectorizer(lowercase=True, token_pattern=r'\b\w+\b', binary=True)
+    sparse_matrix = cv.fit_transform(documents)
+    dense_matrix = sparse_matrix.todense()
+    td_matrix = dense_matrix.T  # rows represent tokens
+    t2i = cv.vocabulary_
+    return td_matrix, t2i
+
+# tokenizer that applies stemming
+def stem_tokenizer(text):
+    tokens = re.findall(r'\b\w+\b', text.lower())
+    return [stemmer.stem(token) for token in tokens]
 
 ### document setup with TfIdfVectorizer > not sure whether it can be this simple? 
 def get_tfidf(documents: list):
@@ -66,9 +87,51 @@ def input_checker(user_input):
            print("Exit")
            return False
     return True
+
+# 2a&b (Stemming & exact matches) 
+# NEW: Query Processing Functions
+
+# Process the query into a list of tuples (token, exact)
+def process_query(query):
+    tokens = []
+    # this regex finds either "something in quotes" or individual words.
+    pattern = r'"(.*?)"|(\w+)'
+    for match in re.finditer(pattern, query):
+        if match.group(1):  # if token is in double quotes => exact match
+            tokens.append((match.group(1).lower(), True))
+        elif match.group(2):  # otherwise, token is to be stemmed
+            tokens.append((match.group(2).lower(), False))
+    return tokens
+
+# rewrite query into a Python expression for eval()
+def rewrite_query(query, t2i_stem, t2i_exact):
+    tokens = process_query(query)
+    token_expressions = []
+    for token, exact in tokens:
+        # check for boolean operators (using dictionary d)
+        if token in d:
+            token_expressions.append(d[token])
+        else:
+            if exact:
+                # for exact token, use exact index
+                if token not in t2i_exact:
+                    token_expressions.append('np.zeros((1, len(documents)), dtype=int)')
+                else:
+                    token_expressions.append(f'td_matrix_exact[{t2i_exact[token]}]')
+            else:
+                # for non-exact token, stem it and look up in the stem index
+                stemmed = stemmer.stem(token)
+                if stemmed not in t2i_stem:
+                    token_expressions.append('np.zeros((1, len(documents)), dtype=int)')
+                else:
+                    token_expressions.append(f'td_matrix_stem[{t2i_stem[stemmed]}]')
+    return " ".join(token_expressions)
        
 #Modification of former rewrite_token() from course material that handles words not in documents
 # check t2i variable: refers to a variable that is only in the main function
+
+# OLD: avoid_operators and rewrite_query functions are replaced by the above
+'''
 def avoid_operators(t, t2i):
    if t in d:
        return d[t]
@@ -80,8 +143,22 @@ def avoid_operators(t, t2i):
 def rewrite_query(query, t2i):
    return " ".join(avoid_operators(t, t2i) for t in query.split())
 
+
 def retrieve_matches(query, documents, td_matrix, t2i):
     hits_matrix = eval(rewrite_query(query, t2i))
+    hits_list = list(hits_matrix.nonzero()[1])
+    return hits_list
+'''
+
+def retrieve_matches(query, documents, td_matrix_stem, t2i_stem, td_matrix_exact, t2i_exact):
+    # Create the evaluable query expression
+    query_expression = rewrite_query(query, t2i_stem, t2i_exact)
+    try:
+        # Evaluate the expression. (Note that 'documents' is used in the dummy np.zeros expression.)
+        hits_matrix = eval(query_expression)
+    except Exception as e:
+        print("Error evaluating query:", e)
+        return []
     hits_list = list(hits_matrix.nonzero()[1])
     return hits_list
 
@@ -123,17 +200,16 @@ def main():
     ### END OF DOCUMENTS:
     
     ### SETUP
-    setup = document_setup(documents)
-    # setup = get_tfidf(documents)
-    td_matrix = setup[0]
-    t2i = setup[1]
+    # Build two indices: one for stemming (non-exact tokens) and one for exact matches.
+    td_matrix_stem, t2i_stem = document_setup_stem(documents)
+    td_matrix_exact, t2i_exact = document_setup_exact(documents)
     ### END OF SETUP
     
     while True:
         user_input = user_query()
         if input_checker(user_input) == False:
             break
-        hits_list = retrieve_matches(user_input, documents, td_matrix, t2i)
+        hits_list = retrieve_matches(user_input, documents, td_matrix_stem, t2i_stem,                                  td_matrix_exact, t2i_exact)
         print_retrieved(hits_list, documents)
 
 ### comment: the main function could be written in a more functional fashion (=! object oriented) which would
