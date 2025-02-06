@@ -15,9 +15,12 @@ stemmer = PorterStemmer()
 
 # d. Wildcard searches: Let the users search on incomplete terms, such as hous* (easiest) or *ing (similar to previous case) or h*ing (hardest). Read Chapter 3 of the book to learn more about this topic.
 ### comment: I get a "nothing to repeat at position 0" error when running this function 
+### Comment, by Akseli: wildcard() returns new string with regex in place of wildcard. The error was either a bug or some extra escape characters were needed. It also appears that the replcae argument needs to be passed as a regex. Also added conditions, because the lack of them caused errors. Should work better now. 
 def wildcard(string:str):
-    new_string = re.sub("*", r"\w*", string)
-    new_string = re.sub("?", r".{1}", new_string)
+    if "*" in string:
+        new_string = re.sub(r"\*", r"\\w*", string)
+    if "?" in string:
+        new_string = re.sub(r"\?", r"\\w{1}", string)
     return new_string
     
 # wildcards = {"*": r"\w*", "?": r".{1}"}  # wildcard replacements: \w* = word characters zero or more times, .{1} = any character exactly once
@@ -251,7 +254,7 @@ def main():
                                         td_matrix_exact, t2i_exact
                                         )
             print_retrieved(hits_list, documents)
-
+            
 if __name__ == "__main__":
 ### DATA: I moved these variables here as the program is supposed to work with any data - Liisa
 
