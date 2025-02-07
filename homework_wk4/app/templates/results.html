@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+</head>
+<body>
+    <h2>Search Results for "{{ query }}"</h2>
+
+    {% if hits_list %}
+    <ul>
+        {% for hit in hits_list %}
+            <li>
+                <strong>Matching doc #{{ loop.index }}:</strong>
+                <pre>{{ limited_docs[hit][:250] }}...</pre>
+                <!-- Display first 250 characters of each document -->
+            </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,4 @@
+Flask
+Werkzeug
+Flask-WTF
+dotenv
