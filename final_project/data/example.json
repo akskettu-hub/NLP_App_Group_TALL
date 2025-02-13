@@ -1,0 +1,535 @@
+{
+    "2025": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2025/"
+    },
+    "2024": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2024/"
+    },
+    "2023": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2023/"
+    },
+    "2022": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2022/"
+    },
+    "2021": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2021/"
+    },
+    "2020": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2020/",
+        "links_pages_for_year": [
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/?_offset=0",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/?_offset=20",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/?_offset=40",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/?_offset=60",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/?_offset=80",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/?_offset=100"
+        ],
+        "links_to_judgements": [
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200088",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200093",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200090",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200100",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200082",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200097",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200084",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200099",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200089",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200096",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200095",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200083",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200098",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200092",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200101",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200085",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200091",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200086",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200094",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200087",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200081",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200071",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200072",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200075",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200076",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200062",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200080",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200074",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200065",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200079",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200067",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200068",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200078",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200070",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200077",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200063",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200066",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200073",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200069",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200064",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200054",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200046",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200042",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200060",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200055",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200061",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200058",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200059",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200057",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200051",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200048",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200045",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200049",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200044",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200047",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200052",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200043",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200050",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200053",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200056",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200027",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200026",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200036",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200029",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200035",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200041",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200022",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200037",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200038",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200028",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200024",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200034",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200039",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200032",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200033",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200025",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200030",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200023",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200031",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200040",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200012",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200010",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200008",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200004",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200006",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200002",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200005",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200020",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200014",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200009",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200013",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200016",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200007",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200021",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200018",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200017",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200015",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200011",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200019",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200003",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2020/20200001"
+        ]
+    },
+    "2019": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2019/",
+        "links_pages_for_year": [
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/?_offset=0",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/?_offset=20",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/?_offset=40",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/?_offset=60",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/?_offset=80",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/?_offset=100"
+        ],
+        "links_to_judgements": [
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190099",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190105",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190103",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190110",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190095",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190096",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190097",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190102",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190094",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190101",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190112",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190093",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190111",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190100",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190107",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190098",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190108",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190104",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190106",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190109",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190078",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190077",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190084",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190092",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190087",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190090",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190076",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190091",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190074",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190088",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190079",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190073",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190083",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190089",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190075",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190080",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190081",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190085",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190086",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190082",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190070",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190057",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190058",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190067",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190063",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190068",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190061",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190064",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190062",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190072",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190065",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190060",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190055",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190071",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190059",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190066",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190056",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190053",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190069",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190054",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190034",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190051",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190042",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190047",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190050",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190045",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190041",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190037",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190040",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190039",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190036",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190033",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190046",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190048",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190052",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190038",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190043",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190049",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190035",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190044",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190023",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190029",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190018",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190016",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190031",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190026",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190028",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190020",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190025",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190032",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190027",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190022",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190013",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190017",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190024",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190015",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190030",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190021",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190019",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190014",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190009",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190005",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190011",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190001",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190003",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190007",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190002",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190004",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190012",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190010",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190006",
+            "https://www.finlex.fi/fi/oikeus/kko/kko/2019/20190008"
+        ]
+    },
+    "2018": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2018/"
+    },
+    "2017": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2017/"
+    },
+    "2016": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2016/"
+    },
+    "2015": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2015/"
+    },
+    "2014": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2014/"
+    },
+    "2013": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2013/"
+    },
+    "2012": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2012/"
+    },
+    "2011": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2011/"
+    },
+    "2010": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2010/"
+    },
+    "2009": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2009/"
+    },
+    "2008": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2008/"
+    },
+    "2007": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2007/"
+    },
+    "2006": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2006/"
+    },
+    "2005": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2005/"
+    },
+    "2004": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2004/"
+    },
+    "2003": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2003/"
+    },
+    "2002": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2002/"
+    },
+    "2001": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2001/"
+    },
+    "2000": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/2000/"
+    },
+    "1999": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1999/"
+    },
+    "1998": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1998/"
+    },
+    "1997": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1997/"
+    },
+    "1996": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1996/"
+    },
+    "1995": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1995/"
+    },
+    "1994": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1994/"
+    },
+    "1993": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1993/"
+    },
+    "1992": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1992/"
+    },
+    "1991": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1991/"
+    },
+    "1990": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1990/"
+    },
+    "1989": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1989/"
+    },
+    "1988": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1988/"
+    },
+    "1987": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1987/"
+    },
+    "1986": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1986/"
+    },
+    "1985": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1985/"
+    },
+    "1984": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1984/"
+    },
+    "1983": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1983/"
+    },
+    "1982": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1982/"
+    },
+    "1981": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1981/"
+    },
+    "1980": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1980/"
+    },
+    "1979": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1979/"
+    },
+    "1978": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1978/"
+    },
+    "1977": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1977/"
+    },
+    "1976": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1976/"
+    },
+    "1975": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1975/"
+    },
+    "1974": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1974/"
+    },
+    "1973": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1973/"
+    },
+    "1972": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1972/"
+    },
+    "1971": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1971/"
+    },
+    "1970": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1970/"
+    },
+    "1969": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1969/"
+    },
+    "1968": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1968/"
+    },
+    "1967": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1967/"
+    },
+    "1966": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1966/"
+    },
+    "1965": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1965/"
+    },
+    "1964": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1964/"
+    },
+    "1963": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1963/"
+    },
+    "1962": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1962/"
+    },
+    "1961": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1961/"
+    },
+    "1960": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1960/"
+    },
+    "1959": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1959/"
+    },
+    "1958": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1958/"
+    },
+    "1957": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1957/"
+    },
+    "1956": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1956/"
+    },
+    "1955": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1955/"
+    },
+    "1954": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1954/"
+    },
+    "1953": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1953/"
+    },
+    "1952": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1952/"
+    },
+    "1951": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1951/"
+    },
+    "1950": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1950/"
+    },
+    "1949": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1949/"
+    },
+    "1948": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1948/"
+    },
+    "1947": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1947/"
+    },
+    "1946": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1946/"
+    },
+    "1945": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1945/"
+    },
+    "1944": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1944/"
+    },
+    "1943": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1943/"
+    },
+    "1942": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1942/"
+    },
+    "1941": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1941/"
+    },
+    "1940": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1940/"
+    },
+    "1939": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1939/"
+    },
+    "1938": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1938/"
+    },
+    "1937": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1937/"
+    },
+    "1936": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1936/"
+    },
+    "1935": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1935/"
+    },
+    "1934": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1934/"
+    },
+    "1933": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1933/"
+    },
+    "1932": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1932/"
+    },
+    "1931": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1931/"
+    },
+    "1930": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1930/"
+    },
+    "1929": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1929/"
+    },
+    "1928": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1928/"
+    },
+    "1927": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1927/"
+    },
+    "1926": {
+        "link_year_page": "https://www.finlex.fi/fi/oikeus/kko/kko/1926/"
+    }
+}

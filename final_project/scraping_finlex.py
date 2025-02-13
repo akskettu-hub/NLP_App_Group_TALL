@@ -1,11 +1,77 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import json
+import time
 
 def fetch_content(url : str):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     return soup
+
+### CRAWLING: The Following functions crawl through the site and find all links on all pages: The links for all year, links for all pages for year, and links for all judgements on each page.
+# Fetch all year pages. Returns dicionary, with year as key and dictionary as value. This inner dict contains the link to each year page as value. This is so that all years are their own dictionary and all metainfo about that year can be stored in a single dict, e.g. links, how many judgements, possible format info, etc. 
+def fetch_links_years():
+    url = "https://www.finlex.fi/fi/oikeus/kko/kko/"
+    soup = fetch_content(url)
+    links_html = soup.find('div', class_="year-toc-container")
+    
+    links = {}
+    for link in links_html.find_all('a'):
+        links[link.text] = {}
+        links[link.text]["link_year_page"] = "https://www.finlex.fi" + link.get("href")
+    return links
+
+def fetch_page_links_for_year(url : str):
+    soup = fetch_content(url)
+    links_html = soup.find('div', class_="result-pages")
+    
+    links = []
+    if links_html is None:
+        links.append(url)
+        return links
+    
+    links.append(url+"?_offset=0")
+    
+    links_raw = links_html.find_all('a')
+        
+    for link in links_raw:
+        links.append("https://www.finlex.fi" + link.get("href"))
+        
+    return links
+
+def fetch_links_on_page(url : str):
+    soup = fetch_content(url)
+    links_html = soup.find('dl', class_="docList")
+    links_raw = links_html.find_all('a')
+    
+    links = []
+    for link in links_raw:
+        links.append("https://www.finlex.fi" + link.get("href"))
+    return list(set(links))
+
+# give start year and end year as arguments, defaults to maximum range
+def crawl_finlex(start_yr=1926, end_yr=2025):
+    year_links = fetch_links_years()
+    for year in year_links:
+        if int(year) in range(start_yr, end_yr + 1): 
+            print(year, year_links[year]['link_year_page'])
+            year_links[year]['links_pages_for_year'] = fetch_page_links_for_year(year_links[year]['link_year_page'])
+            #print(year_links[year]['links_pages_for_year'])
+            time.sleep(5)
+            jdgmnt_links_for_year = []
+            for page_url in year_links[year]['links_pages_for_year']:
+                time.sleep(5)
+                links_on_page = fetch_links_on_page(page_url)
+                for link in links_on_page: jdgmnt_links_for_year.append(link)
+            year_links[year]['links_to_judgements'] = jdgmnt_links_for_year
+                
+    return year_links
+        
+def store_as_json(file_d : dict):
+    with open("data/example.json", "w") as outfile: 
+        json.dump(file_d, outfile, indent = 4)
+### END OF CRAWLING
 
 ### Fetches data from Soup. Assigns data to dictionary, where each key is a type of data and the value is the contents as text
 def parse_html(soup):
@@ -47,7 +113,7 @@ def paragraphs(soup):
                 current_heading = tag.get_text(strip=True)
                 data[higher_heading][current_heading] = []   # Initialize an empty list for paragraphs
                 higher_heading_last = False
-            else:
+            else: 
                 data['Description'] = []
                 current_heading = 'Description'
                 first_go = False
@@ -74,29 +140,5 @@ def paragraphs(soup):
     return data
 
 if __name__ == "__main__":
-    url = "https://www.finlex.fi/fi/oikeus/kko/kko/2025/20250017"
-    soup = fetch_content(url)
-    #print(soup.prettify())
-    #print(parse_html(soup))
-    p = paragraphs(soup)
-    print(p.keys())
-    print(p['Description'])
-    print(p['Muutoksenhaku Korkeimmassa oikeudessa'])
-    print(p['Korkeimman oikeuden ratkaisu'])
-    #print(p['Asian käsittely alemmissa oikeuksissa'])
-    #print(p['Päätöslauselma'])
-    #print(p['Dokumentin versiot'])
-    print()
-    
-    
-    url = "https://www.finlex.fi/fi/oikeus/kko/kko/2025/20250002"
-    soup = fetch_content(url)
-    #print(soup.prettify())
-    #print(parse_html(soup))
-    p = paragraphs(soup)
-    print(p.keys())
-    #print(p['Dokumentin versiot'])
-    #print(p['Description'])
-    print(p['Description'])
-    print(p['Muutoksenhaku Korkeimmassa oikeudessa'])
-    print(p['Korkeimman oikeuden ratkaisu'])
+    links = crawl_finlex(2019, 2020)
+    store_as_json(links)
