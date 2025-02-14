@@ -5,9 +5,23 @@ The search engine allows a search based on entity names, creating statistics etc
 
 
 # visualization 
-- timeline: histogram of of th edates
+- timeline: histogram of of the judgmemnts
 
 # directory structure
-- split search_engine.py: a file for each search function 
+- split search_engine.py: a file for each search function / Zang
 
 
+# search engine functionalities
+- starting with the neural search / Zang
+- 
+
+# preparation
+- example cases
+
+# data
+- crawler [done] / Akseli
+- parser / Akseli
+
+# UI
+- Flask 
+- css
