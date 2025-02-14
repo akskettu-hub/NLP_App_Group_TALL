@@ -5,15 +5,18 @@ The search engine allows a search based on entity names, creating statistics etc
 
 
 # visualization 
-- timeline: histogram of of the judgmemnts
+- plotting - M 
+- idea / timeline: histogram of of the judgmemnts
+- idea / geographical locations
 
 # directory structure
-- split search_engine.py: a file for each search function / Zang
+- split search_engine.py: a file for each search function - XS / Zang
+- 
 
 
 # search engine functionalities
-- starting with the neural search / Zang
-- 
+- starting with the neural search - M / Zang
+- tf_idf search - L / Liisa 
 
 # preparation
 - example cases
@@ -23,5 +26,10 @@ The search engine allows a search based on entity names, creating statistics etc
 - parser / Akseli
 
 # UI
-- Flask 
-- css
+- Flask - M
+- css - XS
+
+# project management
+- planning: tasks
+- creating issues for each task
+- identifying task numbers in commit messages. 
