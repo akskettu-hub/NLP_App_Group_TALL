@@ -3,7 +3,7 @@ The main idea of the application is to index court judgments.
 It makes court rulings more open and accessible to the public that is not necessarily familiar with the legislation and the legislative language.
 The search engine allows a search based on entity names, creating statistics etc. 
 
-# project management
+# project management / All
 - planning: tasks
 - creating issues for each task
 - identifying task numbers in commit messages. 
@@ -13,12 +13,12 @@ The search engine allows a search based on entity names, creating statistics etc
 # directory structure
 - split search_engine.py: a file for each search function - XS / Zang
 
+# preparation
+- example cases
+
 # search engine functionalities
 - starting with the neural search - M / Zang
 - tf_idf search - L / Liisa 
-
-# preparation
-- example cases
 
 # data
 - crawler [done] / Akseli
