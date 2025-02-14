@@ -3,16 +3,15 @@ The main idea of the application is to index court judgments.
 It makes court rulings more open and accessible to the public that is not necessarily familiar with the legislation and the legislative language.
 The search engine allows a search based on entity names, creating statistics etc. 
 
+# project management
+- planning: tasks
+- creating issues for each task
+- identifying task numbers in commit messages. 
+- GitHub organization: updating readme
 
-# visualization 
-- plotting - M 
-- idea / timeline: histogram of of the judgmemnts
-- idea / geographical locations
 
 # directory structure
 - split search_engine.py: a file for each search function - XS / Zang
-- 
-
 
 # search engine functionalities
 - starting with the neural search - M / Zang
@@ -25,11 +24,14 @@ The search engine allows a search based on entity names, creating statistics etc
 - crawler [done] / Akseli
 - parser / Akseli
 
-# UI
+# UI / Lisa
 - Flask - M
 - css - XS
 
-# project management
-- planning: tasks
-- creating issues for each task
-- identifying task numbers in commit messages. 
+
+
+# visualization 
+- plotting - M 
+- idea / timeline: histogram of of the judgmemnts
+- idea / geographical locations
+
