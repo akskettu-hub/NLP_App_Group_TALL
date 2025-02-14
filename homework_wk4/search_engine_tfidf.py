@@ -45,8 +45,8 @@ def extract_wiki_articles(file: str):
 # NEW: Two Document Setup Functions
 
 ### document setup with CountVectorizer
-# setup index with stemming (for tokens not enclosed in quotes)
 
+# Document setup for stemming (non-exact tokens)
 def document_setup_stem(documents: list):
     cv = CountVectorizer(lowercase=True, tokenizer=stem_tokenizer, token_pattern=None, binary=True)
     sparse_matrix = cv.fit_transform(documents)
@@ -55,7 +55,8 @@ def document_setup_stem(documents: list):
     t2i = cv.vocabulary_
     return td_matrix, t2i
 
-# setup index without stemming (for exact-match tokens in quotes)
+
+# Document setup for exact matches (tokens in quotes)
 def document_setup_exact(documents: list):
     cv = CountVectorizer(lowercase=True, token_pattern=r'\b\w+\b', binary=True)
     sparse_matrix = cv.fit_transform(documents)
@@ -73,8 +74,8 @@ def stem_tokenizer(text):
 def get_tfidf(documents: list):
     """Returns a tuple with the TfIdf matrix and the vocabulary"""
     tfv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm=None) # logarithmic word frequency, idf, no normalization
-    matrix = tfv.fit_transform(documents).todense().T
-    return matrix, tfv.vocabulary_
+    tf_matrix = tfv.fit_transform(documents).todense().T
+    return tfv, tf_matrix
 
 def user_query():
     print()
@@ -114,17 +115,19 @@ def rewrite_query(query, t2i_stem, t2i_exact):
         else:
             if exact:
                 # for exact token, use exact index
-                if token not in t2i_exact:
-                    token_expressions.append('np.zeros((1, len(documents)), dtype=int)')
-                else:
+                if t2i_exact and token in t2i_exact:
                     token_expressions.append(f'td_matrix_exact[{t2i_exact[token]}]')
+                else:
+                    # Handle case where the exact match is not found
+                    token_expressions.append('np.zeros((1, len(documents)), dtype=int)')
             else:
                 # for non-exact token, stem it and look up in the stem index
                 stemmed = stemmer.stem(token)
-                if stemmed not in t2i_stem:
-                    token_expressions.append('np.zeros((1, len(documents)), dtype=int)')
-                else:
+                if t2i_stem and stemmed in t2i_stem:
                     token_expressions.append(f'td_matrix_stem[{t2i_stem[stemmed]}]')
+                else:
+                    # Handle case where the stemmed match is not found
+                    token_expressions.append('np.zeros((1, len(documents)), dtype=int)')
     return " ".join(token_expressions)
        
 # check t2i variable: refers to a variable that is only in the main function
@@ -150,14 +153,23 @@ def retrieve_matches(query, documents, td_matrix, t2i):
 '''
 
 def retrieve_matches(query, documents, td_matrix_stem, t2i_stem, td_matrix_exact, t2i_exact):
-    # Create the evaluable query expression
-    query_expression = rewrite_query(query, t2i_stem, t2i_exact)
+    
+    if td_matrix_exact is not None:
+        # Use the exact matrix and its related dictionary
+        query_expression = rewrite_query(query, None, t2i_exact)
+    elif td_matrix_stem is not None:
+        # Use the stem matrix and its related dictionary
+        query_expression = rewrite_query(query, t2i_stem, None)
+    else:
+        return []
+     
     try:
-        # Evaluate the expression. (Note that 'documents' is used in the dummy np.zeros expression.)
+         # Evaluate the expression. (Note that 'documents' is used in the dummy np.zeros expression.)
         hits_matrix = eval(query_expression)
     except Exception as e:
         print("Error evaluating query:", e)
         return []
+    
     hits_list = list(hits_matrix.nonzero()[1])
     return hits_list
         
@@ -188,12 +200,17 @@ def print_retrieved(hits_list, documents):
 # Document setup using TfidfVectorizer
 def tf_document_setup(documents):
     tfv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2") 
-    tf_matrix = tfv.fit_transform(documents).T.todense() 
+    tf_matrix = tfv.fit_transform(documents).T
+    print("TF Matrix Type:", type(tf_matrix))
+    print("TF Matrix Shape:", tf_matrix.shape)
     return tfv, tf_matrix
 
 # Compute cosine similarity scores
 def tf_retrieve_matches(query, tfv, tf_matrix):
-    query_tf = tfv.transform([query]).todense()  # Convert query to tf-idf vector
+    query_tf = tfv.transform([query]).toarray()  # Convert query to a numpy array
+    # Ensure tf_matrix is a dense numpy array
+    if hasattr(tf_matrix, "toarray"):
+         tf_matrix = tf_matrix.toarray()
     scores = np.dot(query_tf, tf_matrix)  # Compute cosine similarity score
     return scores
 
@@ -203,7 +220,10 @@ def tf_print_retrieved(scores, documents):
         print("No relevant document")
     else:
         print()
-        ranked_scores_and_doc_ids = sorted([(score, doc_idx) for doc_idx, score in enumerate(np.array(scores)[0]) if score > 0], reverse=True) # Rank the documents by similarity score
+        ranked_scores_and_doc_ids = sorted(
+            [(score.item(), doc_idx) for doc_idx, score in enumerate(np.array(scores)[0]) if score.item() > 0],
+            reverse=True
+        ) # Rank the documents by similarity score
         
         print(f"Found {len(ranked_scores_and_doc_ids)} relevant matches:")
         

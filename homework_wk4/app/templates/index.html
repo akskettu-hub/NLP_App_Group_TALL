@@ -12,8 +12,17 @@
     </header>
     <h1>Search the Documents</h1>
     <form action="/search" method="POST">
-        <label for="query">"Please Enter your query, type 'quit' to exit: "</label>
+        <label for="query">Please enter your query:</label>
         <input type="text" name="query" required>
+        
+        <!-- dropdown menu to select the search method -->
+        <label for="search-method">Choose Search Method:</label>
+        <select name="search_method" id="search-method" required>
+            <option value="exact">Exact Match</option>
+            <option value="stem">Stemming (partial match)</option>
+            <option value="relevance">Relevance (TF-IDF)</option>
+        </select>
+        
         <button type="submit">Search</button>
     </form>
 </body>
