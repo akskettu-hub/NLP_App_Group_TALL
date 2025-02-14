@@ -9,23 +9,23 @@ The search engine allows a search based on entity names, creating statistics etc
 - identifying task numbers in commit messages. 
 - GitHub organization: updating readme
 
+## preparation
+- create a database with example cases - XS / Liisa
+
+## database
+- crawler [done] - Akseli
+- parser - M? / Akseli
+
 ## directory structure
 - split search_engine.py: a file for each search function - XS / Zang
-
-## preparation
-- example cases
 
 ## search engine functionalities
 - starting with the neural search - M / Zang
 - tf_idf search - L / Liisa 
 
-## data
-- crawler [done] / Akseli
-- parser / Akseli
-
 ## UI / Lisa
 - Flask - M
-- css - XS
+- CSS - XS
 
 ## visualization 
 - plotting - M 
