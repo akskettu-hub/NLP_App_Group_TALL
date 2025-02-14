@@ -1,3 +1,9 @@
+# PROJECT PLANNING
+The main idea of the application is to index court judgments. 
+It makes court rulings more open and accessible to the public that is not necessarily familiar with the legislation and the legislative language.
+The search engine allows a search based on entity names, creating statistics etc. 
+
+
 # visualization 
 - timeline: histogram of of th edates
 
