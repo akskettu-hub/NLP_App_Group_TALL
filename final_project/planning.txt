@@ -1,1 +1,7 @@
+# visualization 
+- timeline: histogram of of th edates
+
+# directory structure
+- split search_engine.py: a file for each search function 
+
 
