@@ -51,26 +51,33 @@ def fetch_links_on_page(url : str):
     return list(set(links))
 
 # give start year and end year as arguments, defaults to maximum range
-def crawl_finlex(start_yr=1926, end_yr=2025):
+def crawl_finlex(start_yr=1926, end_yr=2025, append_year=False):
     year_links = fetch_links_years()
+    
     for year in year_links:
         if int(year) in range(start_yr, end_yr + 1): 
-            print(year, year_links[year]['link_year_page'])
+            #print(year, year_links[year]['link_year_page'])
             year_links[year]['links_pages_for_year'] = fetch_page_links_for_year(year_links[year]['link_year_page'])
-            #print(year_links[year]['links_pages_for_year'])
-            time.sleep(5)
             jdgmnt_links_for_year = []
+            
             for page_url in year_links[year]['links_pages_for_year']:
-                time.sleep(5)
+                
                 links_on_page = fetch_links_on_page(page_url)
                 for link in links_on_page: jdgmnt_links_for_year.append(link)
+                
+            jdgmnt_links_for_year = sorted(jdgmnt_links_for_year, reverse=True)
             year_links[year]['links_to_judgements'] = jdgmnt_links_for_year
+            
+            if append_year: #If store every year, the code rewrites the dict to json file after every loop. This is incase you want to scrape a lot of links, and are worried about the programme failing without finishing, off by default
+                store_as_json(year_links)
+                           
                 
     return year_links
         
 def store_as_json(file_d : dict):
-    with open("data/example.json", "w") as outfile: 
+    with open("data/lex_links.json", "w") as outfile: 
         json.dump(file_d, outfile, indent = 4)
+        
 ### END OF CRAWLING
 
 ### Fetches data from Soup. Assigns data to dictionary, where each key is a type of data and the value is the contents as text
@@ -140,5 +147,6 @@ def paragraphs(soup):
     return data
 
 if __name__ == "__main__":
-    links = crawl_finlex(2019, 2020)
-    store_as_json(links)
+    links = crawl_finlex(append_year=True)
+    #add_year_to_links()
+    #store_as_json(links)
