@@ -69,14 +69,13 @@ def crawl_finlex(start_yr=1926, end_yr=2025, append_year=False):
             year_links[year]['links_to_judgements'] = jdgmnt_links_for_year
             
             if append_year: #If store every year, the code rewrites the dict to json file after every loop. This is incase you want to scrape a lot of links, and are worried about the programme failing without finishing, off by default
-                store_as_json(year_links)
-                           
+                store_as_json(year_links)      
                 
     return year_links
         
-def store_as_json(file_d : dict):
-    with open("data/lex_links.json", "w") as outfile: 
-        json.dump(file_d, outfile, indent = 4)
+def store_as_json(file_d : dict, url : str):
+    with open(url, "w", encoding="utf-8") as outfile: 
+        json.dump(file_d, outfile, indent = 4, ensure_ascii=False)
         
 ### END OF CRAWLING
 
@@ -102,6 +101,25 @@ def paragraphs(soup):
     headings = soup.find_all(['h4', 'h5'])
     
     data = {}
+    
+    title = soup.find('h2', id='skip').text
+    data['Title'] = title
+    
+    metadata = soup.find('table', class_='metadata')
+    metadata_d = {}
+    
+    #data['Metadata'] = metadata.get_text(strip=True)
+    
+    for field in metadata.find_all('tr'):
+    #    
+        field_head = field.find('th').text
+        field_data = field.find('td').text
+        
+        metadata_d[field_head] = field_data
+        
+    data['Metadata'] = metadata_d
+ 
+    
     current_heading = None
     higher_heading = None
     first_go = True
@@ -146,7 +164,34 @@ def paragraphs(soup):
     
     return data
 
+def scrape_links(start_yr, end_yr):
+    with open("data/lex_links.json") as json_file:
+        data = json.load(json_file)
+    res = {}
+    for year in range(start_yr, end_yr+1):
+        links = data[str(year)]["links_to_judgements"]
+        res[str(year)] = {}
+        for link in links:
+            soup = fetch_content(link)
+            doc = paragraphs(soup)
+            doc['link'] = link
+            res[str(year)][doc['Title']] = doc
+            time.sleep(2)
+    path = "data/sample_database.json"
+    store_as_json(res, path)    
+    
+            
+
 if __name__ == "__main__":
-    links = crawl_finlex(append_year=True)
+    #links = crawl_finlex(append_year=True)
     #add_year_to_links()
     #store_as_json(links)
+    #print(scrape_links(2023, 2025))
+    
+    #url = "https://www.finlex.fi/fi/oikeus/kko/kko/2025/20250014"
+    #soup = fetch_content(url)
+    #doc = paragraphs(soup)
+    #path = "data/sample_data.json"
+    #store_as_json(doc, path)
+    
+    scrape_links(2025, 2025)
