@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import json
 import time
+import os
 
 def fetch_content(url : str):
     response = requests.get(url)
@@ -77,49 +78,45 @@ def store_as_json(file_d : dict, url : str):
     with open(url, "w", encoding="utf-8") as outfile: 
         json.dump(file_d, outfile, indent = 4, ensure_ascii=False)
         
+def append_json(data : dict, file_path : str): 
+    if os.path.exists():
+        with open(file_path, "r", encoding="utf-8") as file:
+            try:
+                existing_data = json.load(file)
+                if not isinstance(existing_data, dict):
+                    existing_data = {}  
+            except json.JSONDecodeError:
+                existing_data = {}  
+    else:
+        existing_data = {}
+        
+    existing_data.update(data)
+    
+    with open(file_path, "w", encoding="utf-8") as file:
+        json.dump(existing_data, file, indent=4, ensure_ascii=False)
 ### END OF CRAWLING
 
-### Fetches data from Soup. Assigns data to dictionary, where each key is a type of data and the value is the contents as text
-def parse_html(soup):
-    doc = {}
-        
-    doc_id = soup.find('title').text # document id, for example 'KKO:2025:17 - Korkeimman oikeuden ennakkopäätökset - FINLEX ®'
-    doc_id = doc_id.split(' -', 1)[0] # Cleans text to just 'KKO:2025:17'
-    doc['Doc_id'] = doc_id
-    
-    subject_matter = soup.find('h3', class_="asiasanat").text # subject matter of the case/title. For example, Lapsen huolto ja tapaamisoikeus.
-    doc['Subject'] = subject_matter
-    
-    metadata = soup.find('table', class_="metadata").text # Case metadata
-    doc['Metadata'] = metadata
-    
-    document = soup.find('div', id="document").text # All of the text of the document here in text format. All the text of the document is stored within this tags.
-    return doc
-
-def paragraphs(soup):
-    
-    headings = soup.find_all(['h4', 'h5'])
-    
+def paragraphs(soup):    
     data = {}
     
     title = soup.find('h2', id='skip').text
     data['Title'] = title
     
+     ### Metadata 
     metadata = soup.find('table', class_='metadata')
+    
     metadata_d = {}
-    
-    #data['Metadata'] = metadata.get_text(strip=True)
-    
     for field in metadata.find_all('tr'):
-    #    
+        
         field_head = field.find('th').text
         field_data = field.find('td').text
         
         metadata_d[field_head] = field_data
         
     data['Metadata'] = metadata_d
- 
+    data['Metadata']['Keywords'] = [keyword.text for keyword in soup.find('h3', class_='asiasanat').find_all('strong')] #finds keywords and adds them to metadata
     
+    ### Text contents
     current_heading = None
     higher_heading = None
     first_go = True
@@ -127,6 +124,7 @@ def paragraphs(soup):
     paragraph_last = False
     
     for tag in soup.find_all(['h4', 'h5', 'p']):
+        #print(soup.find_all(['h4', 'h5', 'p']))
         tag_name = tag.name
         if tag_name in ['h4', 'h5']:
             if tag_name == 'h4':
@@ -159,14 +157,59 @@ def paragraphs(soup):
             
             paragraph_last = True
     
-    #data['Description'] = data['Dokumentin versiot'] 
-    #del data['Dokumentin versiot']
-    
     return data
 
-def scrape_links(start_yr, end_yr):
+def tidy_document(doc : dict, link : str):
+    print("processing:", doc['Title'])
+    doc['Metadata']['Link'] = link
+    
+    #doc['Proceedings in lower courts'] = {}
+    #if "Asian käsittely lunastustoimituksessa ja maaoikeudessa"  in doc.keys():
+    #    for section in doc["Asian käsittely lunastustoimituksessa ja maaoikeudessa"]:
+    #            if section is not "Contents":
+    #                doc['Proceedings in lower courts'][section] = doc["Asian käsittely lunastustoimituksessa ja maaoikeudessa"][section]
+    #    del doc["Asian käsittely lunastustoimituksessa ja maaoikeudessa"]
+    
+    #elif "Asian käsittely alemmassa oikeudessa" in doc.keys():
+    #    doc['Proceedings in lower courts']["Contents"] = doc["Asian käsittely alemmassa oikeudessa"]["Contents"]
+    #    
+    #    del doc["Asian käsittely alemmassa oikeudessa"]
+    #    
+    #else:
+    #    if len(doc['Asian käsittely alemmissa oikeuksissa'].keys()) == 1:
+    #        doc['Proceedings in lower courts']["Contents"] = doc["Asian käsittely alemmissa oikeuksissa"]["Contents"]
+    #    else:
+    #        for section in doc["Asian käsittely alemmissa oikeuksissa"]:
+    #            if section is not "Contents":
+    #                doc['Proceedings in lower courts'][section] = doc["Asian käsittely alemmissa oikeuksissa"][section]
+    #    del doc["Asian käsittely alemmissa oikeuksissa"]
+    
+    #doc['Appeal to the Supreme Court'] = []
+    #for text in doc["Muutoksenhaku Korkeimmassa oikeudessa"]["Contents"]:
+    #    doc['Appeal to the Supreme Court'].append(text)
+        
+    #doc['Decision of the Supreme Court'] = {}
+    #for section in doc["Korkeimman oikeuden ratkaisu"]:
+    #    if section == "Contents":
+    #        doc['Decision of the Supreme Court']["Contents"] = doc["Korkeimman oikeuden ratkaisu"][section]
+    #    if section == "Perustelut":
+    #        doc['Decision of the Supreme Court']["Reasoning"] = doc["Korkeimman oikeuden ratkaisu"][section]
+    #    if section == "Tuomiolauselma":
+    #        doc['Decision of the Supreme Court']["Resolution"] = doc["Korkeimman oikeuden ratkaisu"][section]
+    #    if section == "Eri mieltä olevan jäsenen lausunto":
+    #        doc['Decision of the Supreme Court']["Statements of Dissenting Members"] = doc["Korkeimman oikeuden ratkaisu"][section]            
+            
+    
+    #del doc["Muutoksenhaku Korkeimmassa oikeudessa"]
+    #del doc["Korkeimman oikeuden ratkaisu"]
+    #del doc["Sisällysluettelo"]
+    
+    return doc
+
+def scrape_links(start_yr, end_yr, file_path):
     with open("data/lex_links.json") as json_file:
         data = json.load(json_file)
+        
     res = {}
     for year in range(start_yr, end_yr+1):
         links = data[str(year)]["links_to_judgements"]
@@ -174,13 +217,12 @@ def scrape_links(start_yr, end_yr):
         for link in links:
             soup = fetch_content(link)
             doc = paragraphs(soup)
-            doc['link'] = link
+            doc = tidy_document(doc, link)
             res[str(year)][doc['Title']] = doc
             time.sleep(2)
-    path = "data/sample_database.json"
-    store_as_json(res, path)    
     
-            
+    store_as_json(res, file_path)    
+          
 
 if __name__ == "__main__":
     #links = crawl_finlex(append_year=True)
@@ -188,10 +230,11 @@ if __name__ == "__main__":
     #store_as_json(links)
     #print(scrape_links(2023, 2025))
     
-    #url = "https://www.finlex.fi/fi/oikeus/kko/kko/2025/20250014"
+    #url = "https://www.finlex.fi/fi/oikeus/kko/kko/2025/20250017"
     #soup = fetch_content(url)
     #doc = paragraphs(soup)
+    #doc = tidy_document(doc, url)
     #path = "data/sample_data.json"
     #store_as_json(doc, path)
     
-    scrape_links(2025, 2025)
+    scrape_links(2023, 2025, "data/en_sample_database.json")
