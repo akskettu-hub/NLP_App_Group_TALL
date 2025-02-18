@@ -88,6 +88,18 @@ def ui():
                 continue
 
 
+
+# Initialize global variables for Flask usage
+folder = "data/gutenberg"
+data = dir_to_df(folder)
+setup_vectorizer()
+data_v = vectorize_data(data)
+
+if __name__ == "__main__":
+    # Only run the UI when executing as a script
+    ui()
+
+'''
 if __name__== "__main__":
 
 
@@ -107,3 +119,4 @@ if __name__== "__main__":
 
     ui()
 
+'''
