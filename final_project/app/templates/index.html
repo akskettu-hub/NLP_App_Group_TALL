@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Engine TALL</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
     <header>
         <div class="logo">TALL</div>
     </header>
     <h1>Search the Finlex Data Bank</h1>
-    <h2>Finlex is an online database of up-to-date legislative and other judicial information of Finland. Finlex is owned by Finland's Ministry of Justice.</h2>
+    <h4>Finlex is an online database of up-to-date legislative and other judicial information of Finland. Finlex is owned by Finland's Ministry of Justice.</h4>
     <form method="POST" action="/">
         <input type="text" name="query" placeholder="Enter your search query" required>
         <button type="submit">Search</button>
