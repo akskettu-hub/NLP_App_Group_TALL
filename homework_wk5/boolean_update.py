@@ -143,12 +143,6 @@ def print_retrieved(hits_list):
                 print( '%.250s' % "Matching doc #{:d}: {:s}".format(i + 1, documents[doc_idx])) # '%.250s' Number here determines max length of printout per line
             
 def main():
-    file_path = 'sample_database.json'
-    documents = load_documents(file_path)
-    documents = documents
-    setup = document_setup(documents) 
-    td_matrix = setup[0]
-    t2i = setup[1]
     while True:
         user_input = user_query()
         if input_checker(user_input) == False:
