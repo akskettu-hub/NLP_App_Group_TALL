@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Engine TALL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="logo">TALL</div>
+    </header>
+    <h1>Search the Finlex Data Bank</h1>
+    <h2>Finlex is an online database of up-to-date legislative and other judicial information of Finland. Finlex is owned by Finland's Ministry of Justice.</h2>
+    <form action="/search" method="POST">
+        <label for="query">"Please Enter your query, type 'quit' to exit: "</label>
+        <input type="text" name="query" required>
+        <button type="submit">Search</button>
+    </form>
+</body>
+</html>
