@@ -1,23 +1,21 @@
-from flask import render_template, request
+from flask import request, render_template
 from app import app
-from app.TfIdf import vectorize_query, get_hits, rank, data_v, data
+from app.neural_search import neural_search
+from app.document_loader import load_documents
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    search_results = []
     query = ""
+    results = []
 
     if request.method == "POST":
-        query = request.form["query"]
-        query_v = vectorize_query(query)  
-        hits = get_hits(query_v, data_v)  
-        ranked_hits = rank(hits)  
-
+        query = request.form.get("query")
         
-        search_results = [
-            {"doc_name": data["doc_name"][doc_id], "score": round(score, 3)}
-            for score, doc_id in ranked_hits
-        ]
+        # Load documents
+        documents = load_documents('data/sample_database.json') 
+        
+        # Perform neural search
+        results = neural_search(documents, query)
 
-    return render_template("index.html", query=query, results=search_results)
+    return render_template("index.html", query=query, results=results)

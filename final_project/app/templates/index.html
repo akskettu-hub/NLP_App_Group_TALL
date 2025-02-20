@@ -12,16 +12,23 @@
     </header>
     <h1>Search the Finlex Data Bank</h1>
     <h4>Finlex is an online database of up-to-date legislative and other judicial information of Finland. Finlex is owned by Finland's Ministry of Justice.</h4>
+
+    <!-- Search form -->
     <form method="POST" action="/">
         <input type="text" name="query" placeholder="Enter your search query" required>
         <button type="submit">Search</button>
-      </form>
-      {% if query %}
+    </form>
+
+    {% if query %}
         <h2>Results for: "{{ query }}"</h2>
         {% if results %}
             <ul>
                 {% for result in results %}
-                    <li>{{ result.doc_name }} (Score: {{ result.score }})</li>
+                    <!-- Display result title and score -->
+                    <li>
+                        <strong>{{ result.title }}</strong><br>
+                        <p>{{ result.snippet }}... <em>(Score: {{ result.score }})</em></p>
+                    </li>
                 {% endfor %}
             </ul>
         {% else %}
