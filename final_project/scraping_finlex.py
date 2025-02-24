@@ -1,18 +1,38 @@
 import requests
 from bs4 import BeautifulSoup
-import pandas as pd
 import json
 import time
+import datetime 
 import os
+
+def store_as_json(file_d : dict, filepath : str):
+    with open(filepath, "w", encoding="utf-8") as outfile: 
+        json.dump(file_d, outfile, indent = 4, ensure_ascii=False)
+        
+def append_json(data : dict, file_path : str): 
+    if os.path.exists():
+        with open(file_path, "r", encoding="utf-8") as file:
+            try:
+                existing_data = json.load(file)
+                if not isinstance(existing_data, dict):
+                    existing_data = {}  
+            except json.JSONDecodeError:
+                existing_data = {}  
+    else:
+        existing_data = {}
+        
+    existing_data.update(data)
+    
+    with open(file_path, "w", encoding="utf-8") as file:
+        json.dump(existing_data, file, indent=4, ensure_ascii=False)
 
 def fetch_content(url : str):
     response = requests.get(url)
     soup = BeautifulSoup(response.content, 'html.parser')
     return soup
 
-### CRAWLING: The Following functions crawl through the site and find all links on all pages: The links for all year, links for all pages for year, and links for all judgements on each page.
-# Fetch all year pages. Returns dicionary, with year as key and dictionary as value. This inner dict contains the link to each year page as value. This is so that all years are their own dictionary and all metainfo about that year can be stored in a single dict, e.g. links, how many judgements, possible format info, etc. 
-def fetch_links_years():
+### Link scraping: The Following functions crawl through the site and find all links on all pages: The links for all year, links for all pages for year, and links for all judgements on each page.
+def fetch_links_years(): # Fetch all year pages. Returns dicionary, with year as key and dictionary as value. This inner dict contains the link to each year page as value. This is so that all years are their own dictionary and all metainfo about that year can be stored in a single dict, e.g. links, how many judgements, possible format info, etc. 
     url = "https://www.finlex.fi/fi/oikeus/kko/kko/"
     soup = fetch_content(url)
     links_html = soup.find('div', class_="year-toc-container")
@@ -23,7 +43,7 @@ def fetch_links_years():
         links[link.text]["link_year_page"] = "https://www.finlex.fi" + link.get("href")
     return links
 
-def fetch_page_links_for_year(url : str):
+def fetch_page_links_for_year(url : str): # Fetch all pages for a given year
     soup = fetch_content(url)
     links_html = soup.find('div', class_="result-pages")
     
@@ -41,7 +61,7 @@ def fetch_page_links_for_year(url : str):
         
     return links
 
-def fetch_links_on_page(url : str):
+def fetch_links_on_page(url : str): # Fetch all links on a given page for a given year.
     soup = fetch_content(url)
     links_html = soup.find('dl', class_="docList")
     links_raw = links_html.find_all('a')
@@ -51,8 +71,97 @@ def fetch_links_on_page(url : str):
         links.append("https://www.finlex.fi" + link.get("href"))
     return list(set(links))
 
+def fetch_all_links():
+    end_yr = datetime.datetime.now().year # End year is current year
+    
+    year_links = fetch_links_years()
+    
+    for year in year_links:
+        print("Getting links for ", year)
+        if int(year) in range(1926, end_yr + 1): 
+            year_links[year]['links_pages_for_year'] = fetch_page_links_for_year(year_links[year]['link_year_page'])
+            jdgmnt_links_for_year = []
+            
+            for page_url in year_links[year]['links_pages_for_year']:
+                
+                links_on_page = fetch_links_on_page(page_url)
+                for link in links_on_page: jdgmnt_links_for_year.append(link)
+                
+            jdgmnt_links_for_year = sorted(jdgmnt_links_for_year, reverse=True)
+            year_links[year]['links_to_judgements'] = jdgmnt_links_for_year
+                
+    return year_links
+
+### This function checks if links database exists. If not, it creates it from scratch. If it does, it will check if years are missing from the database. If yes, it adds them to database. If not, it checks that  the links for the current year are up to date. Update_existing parameter determines whether link database is updated. 
+def links(file_path : str, update_existing=True):
+    if not os.path.isfile(file_path): # If link file does not already exist, find all links to all judgements and save them as .json.
+        links = fetch_all_links()
+        store_as_json(links, file_path)
+        
+    else: # If file does already exist, find all links for current year and add them to current years links. This ensures that the latest links are added to the link database.
+        if not update_existing: 
+            print("Link database found. Not updating.")
+        
+        else:
+            print("File found. Checking for updates to database...")
+            
+            with open(file_path, 'r') as file:
+                data = json.load(file)
+
+            current_year = datetime.datetime.now().year # Current year
+            
+            years_in_database = [int(year) for year in data.keys()]
+            missing_years = [year for year in range(1926, current_year + 1) if year not in years_in_database]
+            
+            if len(missing_years) > 0: # if a year or more is missing, add years to data
+            
+                for year in missing_years:
+                    
+                    url = "https://www.finlex.fi/fi/oikeus/kko/kko/" + str(year) + "/"
+                    pages = fetch_page_links_for_year(url)
+                    
+                    links = []
+                    for page in pages:
+                        links_on_page = fetch_links_on_page(page)
+                        for link in links_on_page:
+                            links.append(link)
+                    links = sorted(links, reverse=True)
+                    
+                    data[str(year)] = {}
+                    data[str(year)]["link_year_page"] = url 
+                    data[str(year)]["links_pages_for_year"] = pages
+                    data[str(year)]["links_to_judgements"] = links
+                    
+                    print("Links database updated. Entry for the year", year, "added.", len(links), "links added.")
+                
+                store_as_json(data, file_path)  
+            
+            else: 
+                url = "https://www.finlex.fi/fi/oikeus/kko/kko/" + str(current_year) + "/"
+                pages = fetch_page_links_for_year(url)
+                        
+                links = []
+                for page in pages:
+                    links_on_page = fetch_links_on_page(page)
+                    for link in links_on_page:
+                        links.append(link)
+                links = sorted(links, reverse=True)
+                    
+                if len(data[str(current_year)]["links_to_judgements"]) < len(links): # links are missing, update link list and page link list.
+                    links_added = len(links) - len(data[str(current_year)]["links_to_judgements"])
+                    data[str(current_year)]["links_pages_for_year"] = pages
+                    data[str(current_year)]["links_to_judgements"] = links
+                    store_as_json(data, file_path)
+                    print("Links database updated.", links_added, "links added.")
+                else: print("Links database already up to date.")        
+### End of link scraping
+
+### Judgement scraping
 # give start year and end year as arguments, defaults to maximum range
-def crawl_finlex(start_yr=1926, end_yr=2025, append_year=False):
+def crawl_finlex(start_yr=1926, end_yr=None, append_year=False):
+    if end_yr is None:
+        end_yr = datetime.datetime.now().year # By default, end year is current year
+    
     year_links = fetch_links_years()
     
     for year in year_links:
@@ -74,27 +183,8 @@ def crawl_finlex(start_yr=1926, end_yr=2025, append_year=False):
                 
     return year_links
         
-def store_as_json(file_d : dict, url : str):
-    with open(url, "w", encoding="utf-8") as outfile: 
-        json.dump(file_d, outfile, indent = 4, ensure_ascii=False)
-        
-def append_json(data : dict, file_path : str): 
-    if os.path.exists():
-        with open(file_path, "r", encoding="utf-8") as file:
-            try:
-                existing_data = json.load(file)
-                if not isinstance(existing_data, dict):
-                    existing_data = {}  
-            except json.JSONDecodeError:
-                existing_data = {}  
-    else:
-        existing_data = {}
-        
-    existing_data.update(data)
-    
-    with open(file_path, "w", encoding="utf-8") as file:
-        json.dump(existing_data, file, indent=4, ensure_ascii=False)
-### END OF CRAWLING
+
+### END OF Judgement scraping
 
 def paragraphs(soup):    
     data = {}
@@ -163,51 +253,10 @@ def tidy_document(doc : dict, link : str):
     print("processing:", doc['Title'])
     doc['Metadata']['Link'] = link
     
-    #doc['Proceedings in lower courts'] = {}
-    #if "Asian käsittely lunastustoimituksessa ja maaoikeudessa"  in doc.keys():
-    #    for section in doc["Asian käsittely lunastustoimituksessa ja maaoikeudessa"]:
-    #            if section is not "Contents":
-    #                doc['Proceedings in lower courts'][section] = doc["Asian käsittely lunastustoimituksessa ja maaoikeudessa"][section]
-    #    del doc["Asian käsittely lunastustoimituksessa ja maaoikeudessa"]
-    
-    #elif "Asian käsittely alemmassa oikeudessa" in doc.keys():
-    #    doc['Proceedings in lower courts']["Contents"] = doc["Asian käsittely alemmassa oikeudessa"]["Contents"]
-    #    
-    #    del doc["Asian käsittely alemmassa oikeudessa"]
-    #    
-    #else:
-    #    if len(doc['Asian käsittely alemmissa oikeuksissa'].keys()) == 1:
-    #        doc['Proceedings in lower courts']["Contents"] = doc["Asian käsittely alemmissa oikeuksissa"]["Contents"]
-    #    else:
-    #        for section in doc["Asian käsittely alemmissa oikeuksissa"]:
-    #            if section is not "Contents":
-    #                doc['Proceedings in lower courts'][section] = doc["Asian käsittely alemmissa oikeuksissa"][section]
-    #    del doc["Asian käsittely alemmissa oikeuksissa"]
-    
-    #doc['Appeal to the Supreme Court'] = []
-    #for text in doc["Muutoksenhaku Korkeimmassa oikeudessa"]["Contents"]:
-    #    doc['Appeal to the Supreme Court'].append(text)
-        
-    #doc['Decision of the Supreme Court'] = {}
-    #for section in doc["Korkeimman oikeuden ratkaisu"]:
-    #    if section == "Contents":
-    #        doc['Decision of the Supreme Court']["Contents"] = doc["Korkeimman oikeuden ratkaisu"][section]
-    #    if section == "Perustelut":
-    #        doc['Decision of the Supreme Court']["Reasoning"] = doc["Korkeimman oikeuden ratkaisu"][section]
-    #    if section == "Tuomiolauselma":
-    #        doc['Decision of the Supreme Court']["Resolution"] = doc["Korkeimman oikeuden ratkaisu"][section]
-    #    if section == "Eri mieltä olevan jäsenen lausunto":
-    #        doc['Decision of the Supreme Court']["Statements of Dissenting Members"] = doc["Korkeimman oikeuden ratkaisu"][section]            
-            
-    
-    #del doc["Muutoksenhaku Korkeimmassa oikeudessa"]
-    #del doc["Korkeimman oikeuden ratkaisu"]
-    #del doc["Sisällysluettelo"]
-    
     return doc
 
 def scrape_links(start_yr, end_yr, file_path):
-    with open("data/lex_links.json") as json_file:
+    with open("data/links.json") as json_file:
         data = json.load(json_file)
         
     res = {}
@@ -221,7 +270,7 @@ def scrape_links(start_yr, end_yr, file_path):
             res[str(year)][doc['Title']] = doc
             time.sleep(2)
     
-    store_as_json(res, file_path)    
+    store_as_json(res, file_path) 
           
 
 if __name__ == "__main__":
@@ -237,4 +286,6 @@ if __name__ == "__main__":
     #path = "data/sample_data.json"
     #store_as_json(doc, path)
     
-    scrape_links(2023, 2025, "data/en_sample_database.json")
+    #scrape_links(2023, 2025, "data/en_sample_database.json")
+    path = "data/links.json"
+    links(path)
