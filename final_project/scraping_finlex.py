@@ -186,7 +186,7 @@ def crawl_finlex(start_yr=1926, end_yr=None, append_year=False):
 
 ### END OF Judgement scraping
 
-def paragraphs(soup):    
+def scrape_document(soup):    
     data = {}
     
     title = soup.find('h2', id='skip').text
@@ -215,17 +215,33 @@ def paragraphs(soup):
     
     for tag in soup.find_all(['h4', 'h5', 'p']):
         #print(soup.find_all(['h4', 'h5', 'p']))
+        
         tag_name = tag.name
+        
+        #print(data)
         if tag_name in ['h4', 'h5']:
             if tag_name == 'h4':
-                higher_heading = tag.get_text(strip=True)
-                data[higher_heading] = {}  # Initialize an empty list for subheadings
+                if current_heading == 'Description':
+                    higher_heading = "Lower Courts"
+                    data[higher_heading] = {}  # Initialize an empty list for subheadings
+                #higher_heading = tag.get_text(strip=True)
+                #data[higher_heading] = {}  # Initialize an empty list for subheadings
+                elif higher_heading == "Lower Courts":
+                    higher_heading = "Appeal to the Supreme Court"
+                    data[higher_heading] = {}
+                    
+                elif higher_heading == "Appeal to the Supreme Court":
+                    higher_heading = "Decision of the Supreme Court"
+                    current_heading = "Decision of the Supreme Court"
+                    data[higher_heading] = {}
                 higher_heading_last = True
             elif not first_go:
                 # New heading found, update current heading
                 current_heading = tag.get_text(strip=True)
-                data[higher_heading][current_heading] = []   # Initialize an empty list for paragraphs
+                data[higher_heading][current_heading] = []   # Initialize an empty list for scrape_document
                 higher_heading_last = False
+            #elif higher_heading == "Decision of the Supreme Court":
+            #    current_heading = tag.get_text(strip=True)
             else: 
                 data['Description'] = []
                 current_heading = 'Description'
@@ -240,7 +256,10 @@ def paragraphs(soup):
                 else:
                     data[higher_heading]['Contents'].append(tag.get_text(strip=True))
             elif current_heading == 'Description':
-                data[current_heading].append(tag.get_text(strip=True))    
+                data[current_heading].append(tag.get_text(strip=True))
+            elif higher_heading == 'Decision of the Supreme Court' and current_heading == "Decision of the Supreme Court":
+                current_heading = "Start of DSC" 
+                
             else:         
                 # Add paragraph text to the last found heading
                 data[higher_heading][current_heading].append(tag.get_text(strip=True))
@@ -250,12 +269,30 @@ def paragraphs(soup):
     return data
 
 def tidy_document(doc : dict, link : str):
-    print("processing:", doc['Title'])
+    print("Processing:", doc['Title'])
     doc['Metadata']['Link'] = link
     
+    delete_l = ["Lainsäädäntö",
+                "Oikeuskäytäntö",
+                "Viranomaiset",
+                "Valtiosopimukset",
+                "Hallituksen esitykset",
+                "Julkaisut",
+                "Finlex®"
+                ]
+    
+    if "Decision of the Supreme Court" in doc:
+        for item in delete_l:
+            if item in doc["Decision of the Supreme Court"]:
+                del doc["Decision of the Supreme Court"][item]
+            
+    for key in doc:
+        if key is not "Appeal to the Supreme Court":
+            if 'Contents' in doc[key]:
+                del doc[key]['Contents']
     return doc
 
-def scrape_links(start_yr, end_yr, file_path):
+def build_new_database(start_yr, end_yr, file_path, sleep_int : int):
     with open("data/links.json") as json_file:
         data = json.load(json_file)
         
@@ -265,12 +302,13 @@ def scrape_links(start_yr, end_yr, file_path):
         res[str(year)] = {}
         for link in links:
             soup = fetch_content(link)
-            doc = paragraphs(soup)
-            doc = tidy_document(doc, link)
+            doc = scrape_document(soup)
+            
+            tidy_document(doc, link)
             res[str(year)][doc['Title']] = doc
-            time.sleep(2)
+            time.sleep(sleep_int)
     
-    store_as_json(res, file_path) 
+        store_as_json(res, file_path) # Stores res after yeach year has been scraped, so that if proccess is interrupted at least something is saved to disc.
           
 
 if __name__ == "__main__":
@@ -281,11 +319,12 @@ if __name__ == "__main__":
     
     #url = "https://www.finlex.fi/fi/oikeus/kko/kko/2025/20250017"
     #soup = fetch_content(url)
-    #doc = paragraphs(soup)
+    #doc = scrape_document(soup)
     #doc = tidy_document(doc, url)
     #path = "data/sample_data.json"
     #store_as_json(doc, path)
     
-    #scrape_links(2023, 2025, "data/en_sample_database.json")
-    path = "data/links.json"
-    links(path)
+    build_new_database(2020, 2025, "data/test_database.json", 2)
+    #path = "data/links.json"
+    #links(path)
+    
