@@ -1,122 +1,139 @@
-
-"""
-
-
-████████╗ █████╗ ██╗     ██╗     
-╚══██╔══╝██╔══██╗██║     ██║     
-   ██║   ███████║██║     ██║     
-   ██║   ██╔══██║██║     ██║     
-   ██║   ██║  ██║███████╗███████╗
-   ╚═╝   ╚═╝  ╚═╝╚══════╝╚══════╝
-
-TF-IDF based search.
-Assumes a dataset with at least doc_name and doc_text values.
-"""
-
-
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-import pandas as pd
 import numpy as np
-import os
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+import json
+import re
+
+def load_documents(file_path):
+    documents = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+        
+## updated funtion per Friday's discussion
+    for year, cases in data.items():
+        for case_info in cases.values():  
+            text_content = []
+            
+            if "Title" in case_info:
+                text_content.append(f"Title: {case_info['Title']}")  
+            
+            if "Metadata" in case_info:
+                metadata = case_info["Metadata"]
+                if "Link" in metadata:
+                    text_content.append(f"Link: {metadata['Link']}")
+                if "Diaarinumero:" in metadata:
+                    text_content.append(f"Diaarinumero: {metadata['Diaarinumero:']}")
+                if "Antopäivä:" in metadata:
+                    text_content.append(f"Antopäivä: {metadata['Antopäivä:']}")
+            
+            if "Description" in case_info:
+                text_content.append("Description:")
+                text_content.extend(case_info["Description"])
+            
+            ### Suppose we want what's in the "content" entries:
+            
+            for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu"]:
+                if section in case_info and "Contents" in case_info[section]:
+                    text_content.append(f"\n{section}:")
+                    text_content.extend(case_info[section]["Contents"])
+            
+            
+            documents.append("\n".join(text_content))
+
+    return documents
+# Document setup using TfidfVectorizer
+def tf_document_setup(documents):
+    tfv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2") 
+    tf_matrix = tfv.fit_transform(documents).T.todense() 
+    return tf_matrix, tfv
+'''
+def user_query():
+    print()
+    user_input = input("Please Enter your query, type 'quit' to exit: ")
+    print()
+    return user_input
 
 
-data = {"doc_name": [],
-        "doc_text": []}
+def input_checker(user_input):
+    if user_input == "quit" or user_input == "":
+           print("Exit")
+           return False
+    return True
+'''
+# Compute cosine similarity scores
+def retrieve_matches(query, tf_matrix, tfv):
+    query_tf = tfv.transform([query]).todense()  # Convert query to tf-idf vector
+    scores = np.dot(query_tf, tf_matrix)  # Compute cosine similarity score
+    return scores
+
+def extract_field(document, field_name):
+    """Extract a field from a structured document string."""
+    match = re.search(rf"{field_name}: (.+)", document)
+    return match.group(1) if match else "N/A"
+
+def tf_get_results(scores, documents):
+    results = []
+    if np.all(scores == 0):
+        return results
+
+    ranked_scores_and_doc_ids = sorted(
+        [(score, i) for i, score in enumerate(np.array(scores)[0]) if score > 0],
+        reverse=True
+    )
+
+    for rank, (score, i) in enumerate(ranked_scores_and_doc_ids):
+        matched_doc = documents[i]
+        
+        results.append({
+            "rank": rank + 1,
+            "title": extract_field(matched_doc, "Title"),
+            "link": extract_field(matched_doc, "Link"),
+            "diaarinumero": extract_field(matched_doc, "Diaarinumero"),
+            "antopaiva": extract_field(matched_doc, "Antopäivä"),
+            "description": matched_doc[:500] + "...",  # Truncate for display
+            "score": float(score)
+        })
+    import json
+    print(json.dumps(results, indent=2))
+    return results
+    
+  
+
+def tf_print_retrieved(scores, documents):
+    if np.all(scores == 0):  
+        print("No matching document")
+    else:
+        ranked_scores_and_doc_ids = sorted([(score, i) for i, score in enumerate(np.array(scores)[0]) if score > 0], reverse=True) # Rank the documents by similarity score
+        
+        print(f"Found {len(ranked_scores_and_doc_ids)} matches:")
+        
+        print_limit = 500  # Change the number here to determine the output length
+        for rank, (score, i) in enumerate(ranked_scores_and_doc_ids):
+            matched_doc = documents[i]
+            limit_doc = matched_doc[:print_limit]  
+            
+            limit_doc += "..."  
+            
+            print(f"\nMatching doc #{rank + 1}:")
+            print(limit_doc) 
+            print(f"(score: {score:.4f})")  
 
 
-def setup_vectorizer():
-    global vectorizer
-    vectorizer = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2")
-
-def vectorize_data(data):
-    vect_data = vectorizer.fit_transform(data['doc_text']).T.tocsr()
-    return vect_data
-
-def vectorize_query(query: str):
-    vect_query = vectorizer.transform([query]).tocsc()
-    return vect_query
-
-def get_hits(query, data):
-    """Returns cosine similarities"""
-    return np.dot(query, data)
-
-def rank(hits):
-    try: 
-        return sorted(zip(np.array(hits[hits.nonzero()])[0], hits.nonzero()[1]), reverse=True)
-    except:
-        print("No search results.")
-
-def print_ranked(ranked_hits):
-    print("Search results in order of relevance:")
-    for score, id in ranked_hits:
-        print(f'{data['doc_name'][id]}, score {score:.3f}')
-
-
-## setting up data for testing
-
-def dir_to_df(folder: dir, extension=".txt"):
-    """Returns a pandas DataFrame with the name and text of all files in a folder (default filetype=.txt)"""
-    data = {"doc_name": [],
-            "doc_text": []}
-    for file in os.scandir(folder): # iterates through the fodler
-        filename = os.fsdecode(file) 
-        if file.is_file() and filename.endswith(extension):
-            data["doc_name"].append(filename.split("/")[-1])
-            f = open(file, "r", encoding="utf-8", errors="ignore")
-            content = f.read()
-            data["doc_text"].append(content)
-            f.close()
-    df = pd.DataFrame.from_dict(data)
-    return df        
-
-## ui for testing
-
-def ui():
+'''         
+def main():
     while True:
-        print("Enter your query, or type 'exit' to quit.")
-        query = input(">>> ")
-        if query == "exit":
+        user_input = user_query()
+        if not input_checker(user_input):
             break
-        else:
-            query_v = vectorize_query(query)
-            results = get_hits(query_v, data_v)
-            try: 
-                ranked = rank(results)
-                print_ranked(ranked)
-            except:
-                print("No search results.")
-                continue
-
-
-
-# Initialize global variables for Flask usage
-folder = "data/gutenberg"
-data = dir_to_df(folder)
-setup_vectorizer()
-data_v = vectorize_data(data)
+        scores = retrieve_matches(user_input, tf_matrix, tfv)
+        results = tf_get_results(scores, documents)
+      
+        import json
+        print(json.dumps(results, indent=2))
+        # tf_print_retrieved(scores, documents)
 
 if __name__ == "__main__":
-    # Only run the UI when executing as a script
-    ui()
-
-'''
-if __name__== "__main__":
-
-
-    ## setting up data ###
-
-    folder = "gutenberg"
-    data = dir_to_df(folder)
-
-
-    ### vectorize data
-
-    setup_vectorizer()
-    data_v = vectorize_data(data)
-
-    ### query and vectorize query
-    ### get results
-
-    ui()
-
-'''
+    file_path = '../data/en_sample_database.json'
+    documents = load_documents(file_path)
+    tf_matrix, tfv = tf_document_setup(documents)  
+    main()
+    '''  
