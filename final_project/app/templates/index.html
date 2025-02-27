@@ -1,39 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Search Engine TALL</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
 <body>
-    <header>
-        <div class="logo">TALL</div>
-    </header>
-    <h1>Search the Finlex Data Bank</h1>
-    <h4>Finlex is an online database of up-to-date legislative and other judicial information of Finland. Finlex is owned by Finland's Ministry of Justice.</h4>
+    <div class="container">
+        <h1>Finlex Search Engine</h1>
+        <h2>Search the Finnish Supreme Court Rulings since 1980</h2>
 
-    <!-- Search form -->
-    <form method="POST" action="/">
-        <input type="text" name="query" placeholder="Enter your search query" required>
-        <button type="submit">Search</button>
-    </form>
-
-    {% if query %}
-        <h2>Results for: "{{ query }}"</h2>
-        {% if results %}
+        <div class="explanation">
+            <p>Welcome to our study project! This search engine lets you explore the Finnish Supreme Court's precedent
+                rulings using three different search methods:</p>
             <ul>
-                {% for result in results %}
-                    <!-- Display result title and score -->
-                    <li>
-                        <strong>{{ result.title }}</strong><br>
-                        <p>{{ result.snippet }}... <em>(Score: {{ result.score }})</em></p>
-                    </li>
-                {% endfor %}
+                <li><strong>Boolean Search (Finnish):</strong> Filter documents based on exact word matches.</li>
+                <li><strong>TF-IDF Search (Finnish):</strong> Leverage term frequency–inverse document frequency for
+                    relevancy ranking.</li>
+                <li><strong>Neural Search (English):</strong> Use a neural embedding model to find semantically similar
+                    cases.</li>
             </ul>
+        </div>
+
+        <form action="/search" method="post">
+            <input type="text" name="query" placeholder="Enter your search term here"
+                value="{{ query if query else '' }}" required>
+            <div class="search-type">
+                <label>
+                    <input type="radio" name="search_type" value="neural" {% if search_type == 'neural' %}checked{% endif %}>
+                    Neural Search (English)
+                </label>
+                <label>
+                    <input type="radio" name="search_type" value="boolean" {% if search_type == 'boolean' %}checked{% endif %}>
+                    Boolean Search (Finnish)
+                </label>
+                <label>
+                    <input type="radio" name="search_type" value="tfidf"  {% if search_type == 'tfidf' %}checked{% endif %}>
+                    TF-IDF Search (Finnish)
+                </label>
+                
+            </div>
+            <button type="submit">Search</button>
+        </form>
+
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+
+{% if query %}
+    {% if search_type == 'boolean' %}
+        {% if results is not none and results|length > 0 %}
+        <h2>Boolean Search Results for "{{ query }}"</h2>
+        {% for result in results %}
+            <div class="result">
+                <h3><a href="{{ result['Link'] }}" target="_blank">{{ result['Title'] }}</a></h3>
+                 <p><strong>Case Number:</strong> {{ result['Case Number'] or "N/A" }}</p>
+                <p><strong>Date:</strong> {{ result['Date'] or "N/A" }}</p>
+                <p><strong>Description:</strong> {{ result['Description'] }}...</p>
+                <!--<p><strong>Relevance Score:</strong> {{ "%.2f"|format(result['score']) }}</p>-->
+            </div>
+        {% endfor %}
         {% else %}
-            <p>No results found.</p>
+        <p>No matches found for "{{ query }}" using Boolean search.</p>
+        {% endif %}
+
+    {% elif search_type == 'tfidf' %}   
+        {% if results is not none and results|length > 0 %}
+        <h2>TF-IDF Search Results for "{{ query }}"</h2>
+        {% for result in results %}
+            <div class="result">
+                <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
+                <p><strong>Case Number:</strong> {{ result.diaarinumero or "N/A" }}</p>
+                <p><strong>Date:</strong> {{ result.antopaiva or "N/A" }}</p>
+                <p><strong>Description:</strong> {{ result.description }}...</p>
+            </div>
+        {% endfor %}
+        {% else %}
+        <p>No matches found for "{{ query }}" using TF-IDF search.</p>
+        {% endif %}
+
+    {% elif search_type == 'neural' %}   
+        {% if results is not none and results|length > 0 %}
+        <h2>Neural Search Results for "{{ query }}"</h2>
+        {% for result in results %}
+            <div class="result">
+                <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
+                <p><strong>Case Number:</strong> {{ result.diaarinumero or "N/A" }}</p>
+                <p><strong>Date:</strong> {{ result.antopaiva or "N/A" }}</p>
+                <p><strong>Description:</strong> {{ result.description }}...</p>
+            </div>
+        {% endfor %}
+        {% else %}
+        <p>No matches found for "{{ query }}" using Neural search.</p>
         {% endif %}
     {% endif %}
+{% endif %}
+
+        
+    </div>
+    <button class="home-button" onclick="window.location.href='/'">Home</button>
 </body>
+
 </html>
