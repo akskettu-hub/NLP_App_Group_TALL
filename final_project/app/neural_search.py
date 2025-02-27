@@ -37,12 +37,12 @@ def load_documents(file_path):
                 text_content.extend(case_info["Description"])
             
             ### Suppose we want what's in the "content" entries:
-            '''
+            
             for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu"]:
                 if section in case_info and "Contents" in case_info[section]:
                     text_content.append(f"\n{section}:")
                     text_content.extend(case_info[section]["Contents"])
-            '''
+            
             
             documents.append("\n".join(text_content))
 
@@ -57,8 +57,8 @@ def neural_search(documents, user_input):
     ranked_doc_indices = np.argsort(cosine_similarities)[::-1]  
     
     num_results = min(3, len(documents))  # Limit to top 3 results
-    print(f'\nYour query "{user_input}" matches {len(documents)} documents.')
-    print(f"Here are the top {num_results} results:\n")
+    # print(f'\nYour query "{user_input}" matches {len(documents)} documents.')
+    # print(f"Here are the top {num_results} results:\n")
 
     result_scores = []
     result_titles = []
@@ -90,7 +90,7 @@ def neural_search(documents, user_input):
         # Store results for plotting
         result_scores.append(float(cosine_similarities[doc_idx]))  
         result_titles.append(metadata["Title"] if metadata["Title"] else "Unknown Title")
-
+        '''
         # Print formatted result
         print(f"Matching doc #{i+1}:")
         for key in metadata:
@@ -100,6 +100,7 @@ def neural_search(documents, user_input):
             print(f"Description: {description}...")  
         
         print(f"(score: {cosine_similarities[doc_idx]:.2f})\n")
+        '''
 
         results.append({
             "rank": i + 1,
@@ -110,7 +111,7 @@ def neural_search(documents, user_input):
             "description": description,
             "score": float(cosine_similarities[doc_idx])
         })
-    print(f"results:{results}")
+    # print(f"results:{results}")
     # return result_scores, result_titles  
     return results
 

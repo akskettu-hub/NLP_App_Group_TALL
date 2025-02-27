@@ -21,13 +21,16 @@ def load_documents(file_path):
                 if "Link" in metadata:
                     text_content.append(f"Link: {metadata['Link']}")
                 if "Diaarinumero:" in metadata:
-                    text_content.append(f"Diaarinumero: {metadata['Diaarinumero:']}")
+                    diaarinumero = metadata["Diaarinumero:"]
+                    
+                    diaarinumero = re.sub(r"\nAntopäivä:\s*\d{1,2}\.\d{1,2}\.\d{4}", "", diaarinumero).strip()
+                    text_content.append(f"Diaarinumero: {diaarinumero}")
+                
                 if "Antopäivä:" in metadata:
                     text_content.append(f"Antopäivä: {metadata['Antopäivä:']}")
             
             if "Description" in case_info:
-                text_content.append("Description:")
-                text_content.extend(case_info["Description"])
+                text_content.append(f"Description: {' '.join(case_info['Description'])}")
             
             ### Suppose we want what's in the "content" entries:
             
@@ -67,8 +70,8 @@ def retrieve_matches(query, tf_matrix, tfv):
 
 def extract_field(document, field_name):
     """Extract a field from a structured document string."""
-    match = re.search(rf"{field_name}: (.+)", document)
-    return match.group(1) if match else "N/A"
+    match = re.search(rf"{field_name}:\s*(.+?)(?:\n[A-Z][a-z]+:|$)", document, re.DOTALL)
+    return match.group(1).strip() if match else "N/A"
 
 def tf_get_results(scores, documents):
     results = []
@@ -89,7 +92,7 @@ def tf_get_results(scores, documents):
             "link": extract_field(matched_doc, "Link"),
             "diaarinumero": extract_field(matched_doc, "Diaarinumero"),
             "antopaiva": extract_field(matched_doc, "Antopäivä"),
-            "description": matched_doc[:500] + "...",  # Truncate for display
+            "description": extract_field(matched_doc, "Description")[:300] + "...",   # Truncate for display
             "score": float(score)
         })
     import json

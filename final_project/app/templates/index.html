@@ -30,17 +30,18 @@
                 value="{{ query if query else '' }}" required>
             <div class="search-type">
                 <label>
-                    <input type="radio" name="search_type" value="boolean" checked>
+                    <input type="radio" name="search_type" value="neural" {% if search_type == 'neural' %}checked{% endif %}>
+                    Neural Search (English)
+                </label>
+                <label>
+                    <input type="radio" name="search_type" value="boolean" {% if search_type == 'boolean' %}checked{% endif %}>
                     Boolean Search (Finnish)
                 </label>
                 <label>
-                    <input type="radio" name="search_type" value="tfidf">
+                    <input type="radio" name="search_type" value="tfidf"  {% if search_type == 'tfidf' %}checked{% endif %}>
                     TF-IDF Search (Finnish)
                 </label>
-                <label>
-                    <input type="radio" name="search_type" value="neural">
-                    Neural Search (English)
-                </label>
+                
             </div>
             <button type="submit">Search</button>
         </form>
@@ -49,19 +50,58 @@
         <p style="color: red;">{{ error }}</p>
         {% endif %}
 
-        {% if results %}
-        <h2>Search Results for "{{ query }}"</h2>
+{% if query %}
+    {% if search_type == 'boolean' %}
+        {% if results is not none and results|length > 0 %}
+        <h2>Boolean Search Results for "{{ query }}"</h2>
         {% for result in results %}
-        <div class="result">
-            <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
-            <p><strong>Case Number:</strong> {{ result.diaarinumero or "N/A" }}</p>
-            <p><strong>Date:</strong> {{ result.antopaiva or "N/A" }}</p>
-            <p>{{ result.description }}...</p>
-            <p><strong>Relevance Score:</strong> {{ "%.2f"|format(result["score"]) }}</p>
-        </div>
+            <div class="result">
+                <h3><a href="{{ result['Link'] }}" target="_blank">{{ result['Title'] }}</a></h3>
+                 <p><strong>Case Number:</strong> {{ result['Case Number'] or "N/A" }}</p>
+                <p><strong>Date:</strong> {{ result['Date'] or "N/A" }}</p>
+                <p><strong>Description:</strong> {{ result['Description'] }}...</p>
+                <!--<p><strong>Relevance Score:</strong> {{ "%.2f"|format(result['score']) }}</p>-->
+            </div>
         {% endfor %}
+        {% else %}
+        <p>No matches found for "{{ query }}" using Boolean search.</p>
         {% endif %}
+
+    {% elif search_type == 'tfidf' %}   
+        {% if results is not none and results|length > 0 %}
+        <h2>TF-IDF Search Results for "{{ query }}"</h2>
+        {% for result in results %}
+            <div class="result">
+                <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
+                <p><strong>Case Number:</strong> {{ result.diaarinumero or "N/A" }}</p>
+                <p><strong>Date:</strong> {{ result.antopaiva or "N/A" }}</p>
+                <p><strong>Description:</strong> {{ result.description }}...</p>
+            </div>
+        {% endfor %}
+        {% else %}
+        <p>No matches found for "{{ query }}" using TF-IDF search.</p>
+        {% endif %}
+
+    {% elif search_type == 'neural' %}   
+        {% if results is not none and results|length > 0 %}
+        <h2>Neural Search Results for "{{ query }}"</h2>
+        {% for result in results %}
+            <div class="result">
+                <h3><a href="{{ result.link }}" target="_blank">{{ result.title }}</a></h3>
+                <p><strong>Case Number:</strong> {{ result.diaarinumero or "N/A" }}</p>
+                <p><strong>Date:</strong> {{ result.antopaiva or "N/A" }}</p>
+                <p><strong>Description:</strong> {{ result.description }}...</p>
+            </div>
+        {% endfor %}
+        {% else %}
+        <p>No matches found for "{{ query }}" using Neural search.</p>
+        {% endif %}
+    {% endif %}
+{% endif %}
+
+        
     </div>
+    <button class="home-button" onclick="window.location.href='/'">Home</button>
 </body>
 
 </html>
