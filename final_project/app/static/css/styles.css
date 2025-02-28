@@ -1,107 +1,153 @@
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f0f4f8;
-    color: #333;
-    margin: 0;
-    padding: 0;
-  }
-  .container {
-    max-width: 800px;
-    margin: 40px auto;
-    background: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  h1 {
-    font-size: 2.5em;
-    margin-bottom: 0;
-    color: #2c3e50;
-    text-align: center;
-  }
-  h2 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
-    color: #34495e;
-    text-align: center;
-  }
-  p {
-    font-size: 1em;
-    line-height: 1.6;
-  }
-  ul {
-    text-align: left;
-    margin-left: 20px;
-  }
-  /* Form Styles */
-  form {
-    margin: 20px 0;
-  }
-  input[type="text"] {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
-  }
-  .search-type {
-    margin-bottom: 15px;
-    text-align: left;
-  }
-  .search-type label {
-    margin-right: 15px;
-    font-size: 0.9em;
-  }
-  button {
-    background-color: #2980b9;
-    color: #fff;
-    border: none;
-    padding: 12px 20px;
-    font-size: 1em;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  button:hover {
-    background-color: #1c5980;
-  }
-  /* Result Styles */
-  .result {
-    background: #ecf0f1;
-    margin-top: 20px;
-    padding: 15px;
-    border-radius: 6px;
-    border-left: 5px solid #2980b9;
-  }
-  .result h3 {
-    margin-top: 0;
-    color: #2c3e50;
-  }
-  .result p {
-    margin: 5px 0;
-  }
-  .explanation {
-    background: #eaf2f8;
-    border-left: 5px solid #3498db;
-    padding: 10px 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-    text-align: left;
-  }
-  .home-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    padding: 8px 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-size: 2.5em;
+  margin-bottom: 0.5em;
+  color: #2c3e50;
+  text-align: center;
+}
+
+h2 {
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+  color: #34495e;
+  text-align: center;
+}
+
+p {
+  font-size: 1em;
+  line-height: 1.6;
+}
+
+ul {
+  text-align: left;
+  margin-left: 20px;
+}
+
+li {
+  margin-bottom: 1em;
+}
+
+/* Form Styles */
+form {
+  margin: 20px 0;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1em;
+}
+
+.search-type {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+.search-type label {
+  margin-right: 15px;
+  font-size: 0.9em;
+}
+
+button {
+  background-color: #2980b9;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #1c5980;
+}
+
+/* Result Styles */
+.result {
+  background: #ecf0f1;
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 5px solid #2980b9;
+}
+
+.result h3 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+.result p {
+  margin: 5px 0;
+}
+
+.explanation {
+  background: #eaf2f8;
+  border-left: 5px solid #3498db;
+  padding: 10px 15px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  text-align: left;
+}
+
+.home-button {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: #2980b9;
+  /* Blue color */
+  color: white;
+  border: none;
+  font-size: 14px;
+  /* Smaller size */
+  font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease-in-out;
 }
 
 .home-button:hover {
-    background-color: #0056b3;
+  background-color: #1c5980;
+  /* Darker blue on hover */
+  transform: scale(1.05);
+}
+
+
+.courthouse-icon {
+  font-size: 20px;
+}
+
+
+.meme {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.meme img {
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }

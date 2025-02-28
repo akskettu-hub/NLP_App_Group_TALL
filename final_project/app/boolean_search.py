@@ -13,7 +13,6 @@ def load_documents(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
         
-## updated funtion per Friday's discussion
     for year, cases in data.items():
         for case_info in cases.values():  
             text_content = []
@@ -35,12 +34,12 @@ def load_documents(file_path):
                 text_content.extend(case_info["Description"])
             
             ### Suppose we want what's in the "content" entries:
-            '''
+            
             for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu"]:
                 if section in case_info and "Contents" in case_info[section]:
                     text_content.append(f"\n{section}:")
                     text_content.extend(case_info[section]["Contents"])
-            '''
+            
             
             documents.append("\n".join(text_content))
 
@@ -109,7 +108,7 @@ def extract_case_info(doc):
         "Description": "N/A"
     }
 
-    # Extract the  Title
+    # Extract the Title
     title_match = re.search(r"^Title:\s*(.*)", doc, re.MULTILINE)
     if title_match:
         case_info["Title"] = title_match.group(1).strip()
@@ -151,7 +150,7 @@ def retrieve_matches(query, td_matrix, t2i, documents):
     # Initialize an empty list to store results
     results = []
 
-    # Now, process each document from the retrieved hits
+    # Process each document from the retrieved hits
     for i in hits_list:
         document = documents[i]  # Get the document text based on index
         # Extract structured case info using the extract_case_info function
@@ -165,7 +164,7 @@ def retrieve_matches(query, td_matrix, t2i, documents):
 
 
 def exact_match(query, documents):   
-    pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE)  # match the exact query aas a whole
+    pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE)  # match the exact query as a whole
     
     matching_docs = []
     for i, doc in enumerate(documents):
