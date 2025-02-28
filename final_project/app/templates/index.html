@@ -17,11 +17,10 @@
             <p>Welcome to our study project! This search engine lets you explore the Finnish Supreme Court's precedent
                 rulings using three different search methods:</p>
             <ul>
-                <li><strong>Boolean Search (Finnish):</strong> Filter documents based on exact word matches.</li>
-                <li><strong>TF-IDF Search (Finnish):</strong> Leverage term frequency–inverse document frequency for
-                    relevancy ranking.</li>
-                <li><strong>Neural Search (English):</strong> Use a neural embedding model to find semantically similar
-                    cases.</li>
+                <li><strong>Neural Search (English):</strong>Search Finnish cases using English terms and find semantically relevant results.</li>
+                <li><strong>Boolean Search (Finnish):</strong> Quickly filter documents by exact word matches.</li>
+                <li><strong>TF-IDF Search (Finnish):</strong> Rank documents based on how important specific terms are in relation to the overall collection.</li>
+                
             </ul>
         </div>
 
@@ -64,7 +63,10 @@
             </div>
         {% endfor %}
         {% else %}
-        <p>No matches found for "{{ query }}" using Boolean search.</p>
+        <div class="meme">
+            <img src="{{ url_for('static', filename='../static/images/judge_judy.jpg') }}" alt="Court Meme">
+        </div>
+   <!--     <p>No matches found for "{{ query }}. Search again".</p>-->
         {% endif %}
 
     {% elif search_type == 'tfidf' %}   
@@ -79,7 +81,10 @@
             </div>
         {% endfor %}
         {% else %}
-        <p>No matches found for "{{ query }}" using TF-IDF search.</p>
+        <div class="meme">
+            <img src="{{ url_for('static', filename='../static/images/judge_judy.jpg') }}" alt="Court Meme">
+        </div>
+     <!--   <p>No matches found for "{{ query }}. Search again".</p> -->
         {% endif %}
 
     {% elif search_type == 'neural' %}   
@@ -94,14 +99,19 @@
             </div>
         {% endfor %}
         {% else %}
-        <p>No matches found for "{{ query }}" using Neural search.</p>
+        <div class="meme">
+            <img src="{{ url_for('static', filename='../static/images/judge_judy.jpg') }}" alt="Court Meme">
+        </div>
+       <!-- <p>No matches found for "{{ query }}. Search again".</p>-->
         {% endif %}
     {% endif %}
 {% endif %}
-
-        
     </div>
-    <button class="home-button" onclick="window.location.href='/'">Home</button>
+
+    <button class="home-button" onclick="window.location.href='/'">
+        <span class="courthouse-icon">🏛️</span>
+    </button>
+    
 </body>
 
 </html>

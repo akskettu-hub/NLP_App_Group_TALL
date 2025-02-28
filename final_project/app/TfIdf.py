@@ -8,7 +8,6 @@ def load_documents(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
         
-## updated funtion per Friday's discussion
     for year, cases in data.items():
         for case_info in cases.values():  
             text_content = []
@@ -43,6 +42,7 @@ def load_documents(file_path):
             documents.append("\n".join(text_content))
 
     return documents
+
 # Document setup using TfidfVectorizer
 def tf_document_setup(documents):
     tfv = TfidfVectorizer(lowercase=True, sublinear_tf=True, use_idf=True, norm="l2") 
@@ -62,6 +62,7 @@ def input_checker(user_input):
            return False
     return True
 '''
+
 # Compute cosine similarity scores
 def retrieve_matches(query, tf_matrix, tfv):
     query_tf = tfv.transform([query]).todense()  # Convert query to tf-idf vector
@@ -69,7 +70,7 @@ def retrieve_matches(query, tf_matrix, tfv):
     return scores
 
 def extract_field(document, field_name):
-    """Extract a field from a structured document string."""
+    # Extract a field from a structured document string 
     match = re.search(rf"{field_name}:\s*(.+?)(?:\n[A-Z][a-z]+:|$)", document, re.DOTALL)
     return match.group(1).strip() if match else "N/A"
 

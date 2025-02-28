@@ -13,8 +13,8 @@ documents = load_neural_documents(file_path)
 tf_matrix, tfv = tf_document_setup(documents)
 
 # For Boolean search, prepare the Boolean matrix
-boolean_documents = load_boolean_documents(file_path)
-boolean_td_matrix, boolean_t2i = boolean_document_setup(boolean_documents)
+# boolean_documents = load_boolean_documents(file_path)
+boolean_td_matrix, boolean_t2i = boolean_document_setup(documents)
 
 @app.route('/')
 def home():
