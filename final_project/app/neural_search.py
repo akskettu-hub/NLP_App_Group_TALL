@@ -6,7 +6,7 @@ import re # for exact match
 from nltk.stem import SnowballStemmer # for Finnish stemming
 import matplotlib.pyplot as plt
 
-model = SentenceTransformer('all-MiniLM-L6-v2')  # We can change it to a better model if we find one
+model = SentenceTransformer('distiluse-base-multilingual-cased-v2')  # We can change it to a better model if we find one
 stemmer = SnowballStemmer("finnish")
 
 
