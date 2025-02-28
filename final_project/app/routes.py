@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, send_from_directory
 import json
 from app import app
 from app.neural_search import neural_search, load_documents as load_neural_documents
@@ -39,5 +39,11 @@ def search():
         # For boolean  search, use the retrieve_matches function from booleansearch.py
         results = boolean_retrieve_matches(user_query, boolean_td_matrix, boolean_t2i, documents)[:3]   or []
 
+    
+
     print(f"Search Type: {search_type}, Query: {user_query}, Results: {results}")
     return render_template('index.html', results=results, query=user_query, search_type=search_type)
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return send_from_directory('static/images', 'error_judge.jpg'), 500
