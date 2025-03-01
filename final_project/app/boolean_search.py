@@ -99,6 +99,7 @@ def input_checker(user_input):
     return True                
 
 '''
+'''
 def extract_case_info(doc):
     case_info = {
         "Title": "N/A",
@@ -135,7 +136,7 @@ def extract_case_info(doc):
         case_info["Description"] = description_match.group(1).strip()
 
     return case_info
-
+'''
 # This is new. The old one for exact match doesn't work on this script
 def exact_match(query, documents):   
     pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE) # match the exact query as a whole, with t
@@ -158,22 +159,7 @@ def retrieve_matches(query, td_matrix, t2i, documents):
     # Process normal query (Boolean search or similar)
     hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
     hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
-
-    # Initialize an empty list to store results
-    results = []
-
-    # Process each document from the retrieved hits
-    for i in hits_list:
-        document = documents[i]  # Get the document text based on index
-        # Extract structured case info using the extract_case_info function
-        case_info = extract_case_info(document)
-        # Add the score (from the hits_matrix) to the case_info dictionary
-        case_info["score"] = hits_matrix[0, i]
-        # Append the structured case info to the results list
-        results.append(case_info)
-
-    # Ensure that results are in a consistent format: a list of dictionaries with 'document' and 'score'
-    return results
+    return hits_list
 
 
 
