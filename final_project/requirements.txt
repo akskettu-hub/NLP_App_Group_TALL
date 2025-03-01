@@ -2,3 +2,6 @@ Flask
 scikit-learn
 pandas
 numpy
+nltk
+matplotlib
+sentence-transformers
