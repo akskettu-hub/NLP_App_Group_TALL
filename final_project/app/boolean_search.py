@@ -137,66 +137,51 @@ def extract_case_info(doc):
     return case_info
 
 
-def retrieve_matches(query, td_matrix, t2i, documents):
-    # Check for exact match (quoted string)
+def retrieve_matches(query):
+    # Check if the query begins and ends with " "
     if query.startswith('"') and query.endswith('"'):
+        # Remove quotes and perform exact match search
         query = query[1:-1]
         return exact_match(query, documents)
     
-    # Process normal query (Boolean search or similar)
-    hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
-    hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
-
-    # Initialize an empty list to store results
-    results = []
-
-    # Process each document from the retrieved hits
-    for i in hits_list:
-        document = documents[i]  # Get the document text based on index
-        # Extract structured case info using the extract_case_info function
-        case_info = extract_case_info(document)
-        # Add the score (from the hits_matrix) to the case_info dictionary
-        case_info["score"] = hits_matrix[0, i]
-        # Append the structured case info to the results list
-        results.append(case_info)
-
-    return results
-
-
-def exact_match(query, documents):   
-    pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE)  # match the exact query as a whole
-    
-    matching_docs = []
-    for i, doc in enumerate(documents):
-        if pattern.search(doc):
-            matching_docs.append(i)
-    
-    return matching_docs
-
-
+    # Otherwise proceed with original query rewrite and operator processing
+    hits_matrix = eval(rewrite_query(query))
+    hits_list = list(hits_matrix.nonzero()[1])
+    return hits_list
 
         
-def print_retrieved(hits_list, documents):
+def print_retrieved(hits_list):
     if not hits_list:  
         print("No matching document")
     else:
         print(f"Found {len(hits_list)} matches:")
         
-        print_limit = 30 # Change the number here to determine the output length
+        print_limit = 300  # Change the number here to determine the output length
         
         for i, doc_idx in enumerate(hits_list):
             matched_doc = documents[doc_idx]
             
-           # print(f"\nMatching doc #{i + 1}:")
+            print(f"\nMatching doc #{i + 1}:")
             
             limit_doc = matched_doc[:print_limit]  
             
             if len(matched_doc) > print_limit:
                 limit_doc += " ..."  
             
-            #print(limit_doc)
+            print(limit_doc)
+            
+def main():
 
-'''
+    while True:
+        hits_list = retrieve_matches(user_input)
+        print_retrieved(hits_list)
+                
+
+if __name__ == "__main__":
+    setup = document_setup(documents) 
+    td_matrix = setup[0]
+    t2i = setup[1]
+    main()
             
 def main():
 
