@@ -40,7 +40,7 @@ def search():
     if search_type == 'neural':
         scores = cosine_similarities(db.embeddings, user_query)
         results = neural_search_results(scores, db.doc_dict) or []
-        results = neural_search(documents, user_query) or []
+        #results = neural_search(documents, user_query) or []
     elif search_type == 'tfidf':
         scores = retrieve_matches(user_query, tf_matrix, tfv)
         results = tf_get_results(scores, documents)[:3]   or []
