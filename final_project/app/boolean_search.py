@@ -141,7 +141,9 @@ def retrieve_matches(query, td_matrix, t2i, documents):
     # Check for exact match (quoted string)
     if query.startswith('"') and query.endswith('"'):
         query = query[1:-1]
-        return exact_match(query, documents)
+        # Return exact match results as a list of dictionaries with 'document' and 'score'
+        matched_documents = exact_match(query, documents)
+        return [{"document": doc, "score": 1.0} for doc in matched_documents]
     
     # Process normal query (Boolean search or similar)
     hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
@@ -157,10 +159,14 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         case_info = extract_case_info(document)
         # Add the score (from the hits_matrix) to the case_info dictionary
         case_info["score"] = hits_matrix[0, i]
+        # Add document information for consistency in the result format
+        case_info["document"] = document
         # Append the structured case info to the results list
         results.append(case_info)
 
+    # Ensure results are in a consistent format: list of dictionaries with 'document' and 'score'
     return results
+
 
 
 def exact_match(query, documents):   
