@@ -10,42 +10,48 @@ class LexDatabase:
     def documents(self): # Handles loading documents originally from neural search and modified
         documents = []
         
-        for year, cases in self.data.items():
-            for case_info in cases.values():  
-                text_content = []
+        
+        for year in self.data.keys():
+            for case in self.data[year].keys():
+                  
+                doc = {}
                 
-                if "Title" in case_info:
-                    text_content.append(f"Title: {case_info['Title']}")  
+                doc["Title"] = self.data[year][case]['Title']
+                    
+                doc['Link'] = self.data[year][case]['Metadata']['Link']
+                doc['Diaarinumero'] = self.data[year][case]['Metadata']['Diaarinumero:']
+                doc['Antopäivä'] = self.data[year][case]['Metadata']['Antopäivä:']
                 
-                if "Metadata" in case_info:
-                    metadata = case_info["Metadata"]
-                    if "Link" in metadata:
-                        text_content.append(f"Link: {metadata['Link']}")
-                    if "Diaarinumero:" in metadata:
-                        text_content.append(f"Diaarinumero: {metadata['Diaarinumero:']}")
-                    if "Antopäivä:" in metadata:
-                        text_content.append(f"Antopäivä: {metadata['Antopäivä:']}")
+                doc['Description'] = self.data[year][case]["Description"]
                 
-                if "Description" in case_info:
-                    text_content.append("Description:")
-                    text_content.extend(case_info["Description"])
-                
-                ### Suppose we want what's in the "content" entries:
-                
-                for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu", "Lower Courts", "Decision of the Supreme Court", "Appeal to the Supreme Court"]:
-                    if section in case_info and "Contents" in case_info[section]:
-                        text_content.append(f"\n{section}:")
-                        text_content.extend(case_info[section]["Contents"])
-                
-                
-                documents.append("\n".join(text_content))
+                for section in ["Lower Courts", "Appeal to the Supreme Court", "Decision of the Supreme Court"]:
+                    
+                    doc[section] = ""
+                    for subsection in self.data[year][case][section].keys():
+                        for item in self.data[year][case][section][subsection]:
+                            doc[section] += item
+                            
+            documents.append(doc)
 
         return documents
     
+    def descriptions(self, documents):
+        desc = []
+                
+        for doc in documents:
+            doc
+        
+        return desc
+        
+    
 if __name__ == "__main__":
-    file_path = '../data/en_sample_database.json'
+    file_path = 'data/database.json'
     db = LexDatabase(file_path)
     docs = db.documents()
+    
+    print(len(docs))
+    print(json.dumps(docs[0], indent = 4, ensure_ascii=False))
+    
     
     
     
