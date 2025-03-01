@@ -54,3 +54,11 @@ The code first scraped the website to find all the links to all the rulings. Thi
 The scraping of the individual rulings was handled with the function `scrape_document()`, which scraped through a ruling, using the structure of the HTML to find the different sections found in each ruling. This was not a straightforward proccess because the structure of the HTML was not particularly clear and consistent across rulings, and the logic of `scrape_document()` is therefore quite complicated. Some rulings varied quite significantly from most other rulings and the function `tidy_document()` was implemented as a result. Even with this, some inconsistencies emerged in the data due to variability in the documents. It was decided that perfecting the database was too laboursome for the scope of this project, and documents that varied sigificantly enough to cause problems in the app were simply deleted with the functions `check_database()` and `final_database()`. This ended up being about 30 documents out of 983.
 
 Finally, the actual database was built with the function `build_new_database()` which stored the data in json format in `final_project/data/database.json`.
+
+## Search functions
+### 1. Boolean search: 
+Boolean search performs exact matches for the given query and retrieves documents that meet the conditions. It allows users to query the database using logical operators like "and", "or", and "not". 
+### 2. Tf-idf search:
+TF-IDF (Term Frequency - Inverse Document Frequency) search ranks documents based on the importance of the search terms in relation to the entire corpus. It returns documents with terms ranked by relevance.
+### 3. Neural search:
+Neural search uses transformer models to understand the semantic meaning of a query. The current search function uses the pretrained open-source model [distiluse-base-multilingual-cased-v2](https://huggingface.co/sentence-transformers/distiluse-base-multilingual-cased-v2) from Hugging Face library.
