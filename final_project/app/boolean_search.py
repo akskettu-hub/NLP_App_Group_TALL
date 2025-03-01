@@ -137,7 +137,7 @@ def extract_case_info(doc):
     return case_info
 
 
-def retrieve_matches(query):
+def retrieve_matches(query, documents=None, matrix=None, tfv=None):
     # Check if the query begins and ends with " "
     if query.startswith('"') and query.endswith('"'):
         # Remove quotes and perform exact match search
@@ -145,9 +145,11 @@ def retrieve_matches(query):
         return exact_match(query, documents)
     
     # Otherwise proceed with original query rewrite and operator processing
-    hits_matrix = eval(rewrite_query(query))
-    hits_list = list(hits_matrix.nonzero()[1])
-    return hits_list
+    if matrix is not None:
+        hits_matrix = eval(rewrite_query(query, matrix))
+        hits_list = list(hits_matrix.nonzero()[1])
+        return hits_list
+    return []
 
         
 def print_retrieved(hits_list):
