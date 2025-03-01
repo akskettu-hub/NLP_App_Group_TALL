@@ -281,7 +281,10 @@ def build_new_database(start_yr, end_yr, file_path, sleep_int : int): #sleep_int
 def check_database(path): #for debugging.
     with open(path) as json_file:
         data = json.load(json_file)
-    headings = {}    
+    headings = {}
+    headings['Non-standard, missing appeal'] = []
+    
+    headings['Non-standard, decision appeal'] = [] 
     for year in data.keys():
         for doc in data[year].keys():
             for key in data[year][doc].keys():
@@ -289,14 +292,41 @@ def check_database(path): #for debugging.
                     headings[key] = 1
                 else:
                     headings[key] += 1
-                
-    print(headings)
+            if "Appeal to the Supreme Court" not in data[year][doc].keys():
+                headings['Non-standard, missing appeal'].append(data[year][doc]['Title'])
+            if "Decision of the Supreme Court" not in data[year][doc].keys():
+                headings['Non-standard, decision appeal'].append(data[year][doc]['Title'])
+    
+    headings['All Non-standard'] = headings['Non-standard, missing appeal']
+    
+    for doc in headings['Non-standard, decision appeal']:
+        if doc not in headings['Non-standard, missing appeal']:
+            headings['All Non-standard'].append(doc)
+    
+    headings['All Non-standard'].sort() 
+    
+    print(json.dumps(headings, indent = 4))
+    
+    print(len(headings['All Non-standard']))
+    
+    return headings
+
+def finalise_database(to_delete : list):
+    with open("data/test_database.json") as json_file:
+        data = json.load(json_file) 
+    
+    for year in data.keys():
+        for doc in data[year].copy().keys():
+            if data[year][doc]['Title'] in to_delete:
+                del data[year][doc]
+    
+    store_as_json(data, "data/database.json")         
         
 if __name__ == "__main__":
     #path = "data/links.json"
     #links(path)
     
-    build_new_database(2015, 2025, "data/test_database1.json", 0)
+    #build_new_database(2015, 2025, "data/test_database1.json", 0)
     
     #check_database("data/test_database.json")
     #tidy_swedish("data/test_database.json")
@@ -304,3 +334,10 @@ if __name__ == "__main__":
     #soup = fetch_content(url)
     #doc = scrape_document(soup)
     #store_as_json(doc, "debug.json")
+    
+    #headings = check_database("data/test_database.json")
+    #to_delete = headings['All Non-standard']
+    
+    #finalise_database(to_delete)
+    
+    check_database("data/database.json")
