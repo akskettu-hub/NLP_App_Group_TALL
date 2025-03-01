@@ -175,7 +175,7 @@ def exact_match(query, documents):
     matching_docs = []
     for i, doc in enumerate(documents):
         if pattern.search(doc):
-            matching_docs.append(documents)
+            matching_docs.append(doc)  # Append the actual document that matched the query
     
     return matching_docs
 
