@@ -135,7 +135,7 @@ def extract_case_info(doc):
         case_info["Description"] = description_match.group(1).strip()
 
     return case_info
-    
+
 # This is new. The old one for exact match doesn't work on this script
 def exact_match(query, documents):   
     pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE) # match the exact query as a whole, with t
@@ -147,19 +147,25 @@ def exact_match(query, documents):
     
     return matching_docs
 
-def retrieve_matches(query, documents=None, matrix=None, tfv=None):
+def retrieve_matches(query, td_matrix, t2i, documents):
+    results = []
+    
     # Check if the query begins and ends with " "
     if query.startswith('"') and query.endswith('"'):
         # Remove quotes and perform exact match search
         query = query[1:-1]
-        return exact_match(query, documents)
+        return [{"document": doc, "score": 1.0} for doc in exact_match(query, documents)]
     
     # Otherwise proceed with original query rewrite and operator processing
     if matrix is not None:
         hits_matrix = eval(rewrite_query(query, matrix))
         hits_list = list(hits_matrix.nonzero()[1])
-        return hits_list
-    return []
+        
+        # Ensure consistent result format
+        return [{"document": documents[i], "score": 1.0} for i in hits_list]
+    
+    return results
+
 
         
 def print_retrieved(hits_list):
