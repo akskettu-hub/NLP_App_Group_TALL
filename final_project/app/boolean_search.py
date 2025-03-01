@@ -154,7 +154,7 @@ def retrieve_matches(query, td_matrix, t2i, documents):
             case_info["document"] = doc  # Add the document itself
             results.append(case_info)  # Append to the results list
         
-        
+        return results
 
     # Process normal query (Boolean search or similar)
     hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
