@@ -135,7 +135,17 @@ def extract_case_info(doc):
         case_info["Description"] = description_match.group(1).strip()
 
     return case_info
-
+    
+# This is new. The old one for exact match doesn't work on this script
+def exact_match(query, documents):   
+    pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE) # match the exact query as a whole, with t
+    
+    matching_docs = []
+    for i, doc in enumerate(documents):
+        if pattern.search(doc):
+            matching_docs.append(i)
+    
+    return matching_docs
 
 def retrieve_matches(query, documents=None, matrix=None, tfv=None):
     # Check if the query begins and ends with " "
