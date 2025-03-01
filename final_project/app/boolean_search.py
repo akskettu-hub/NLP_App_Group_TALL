@@ -147,24 +147,34 @@ def exact_match(query, documents):
     
     return matching_docs
 
-def retrieve_matches(query, documents=None, matrix=None, tfv=None):
-    results = []
-    
-    # Check if the query begins and ends with " "
+def retrieve_matches(query, td_matrix, t2i, documents):
+    # Check for exact match (quoted string)
     if query.startswith('"') and query.endswith('"'):
-        # Remove quotes and perform exact match search
         query = query[1:-1]
-        return [{"document": doc, "score": 1.0} for doc in exact_match(query, documents)]
+        # Return exact match results as a list of dictionaries with 'document' and 'score'
+        matched_documents = exact_match(query, documents)
+        return [{"document": doc, "score": 1.0} for doc in matched_documents]
     
-    # Otherwise proceed with original query rewrite and operator processing
-    if matrix is not None:
-        hits_matrix = eval(rewrite_query(query, matrix))
-        hits_list = list(hits_matrix.nonzero()[1])
-        
-        # Ensure consistent result format
-        return [{"document": documents[i], "score": 1.0} for i in hits_list]
-    
+    # Process normal query (Boolean search or similar)
+    hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
+    hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
+
+    # Initialize an empty list to store results
+    results = []
+
+    # Process each document from the retrieved hits
+    for i in hits_list:
+        document = documents[i]  # Get the document text based on index
+        # Extract structured case info using the extract_case_info function
+        case_info = extract_case_info(document)
+        # Add the score (from the hits_matrix) to the case_info dictionary
+        case_info["score"] = hits_matrix[0, i]
+        # Append the structured case info to the results list
+        results.append(case_info)
+
+    # Ensure that results are in a consistent format: a list of dictionaries with 'document' and 'score'
     return results
+
 
 
 
