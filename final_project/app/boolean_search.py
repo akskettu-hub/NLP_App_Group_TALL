@@ -144,8 +144,18 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         # Return exact match results as a list of dictionaries with 'document' and 'score'
         matched_documents = exact_match(query, documents)
         
-        return [{"document": doc, "score": 1.0} for doc in matched_documents]
-    
+        # Initialize results list for exact matches
+        results = []
+
+        # Process each matched document
+        for doc in matched_documents:
+            case_info = extract_case_info(doc)  # Extract structured case info
+            case_info["score"] = 1.0  # Exact match, so score is 1.0
+            case_info["document"] = doc  # Add the document itself
+            results.append(case_info)  # Append to the results list
+        
+        return results
+
     # Process normal query (Boolean search or similar)
     hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
     hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
@@ -167,6 +177,7 @@ def retrieve_matches(query, td_matrix, t2i, documents):
 
     # Ensure results are in a consistent format: list of dictionaries with 'document' and 'score'
     return results
+
 
 
 
