@@ -42,6 +42,34 @@ class LexDatabase:
 
         return documents
     
+    def documents_dict(self): # This returns the documents in dict format in a list if that is easier for some applications
+        documents = []
+        
+        
+        for year in self.data.keys():
+            for case in self.data[year].keys():
+                    
+                doc = {}
+                
+                doc["Title"] = self.data[year][case]['Title']
+                    
+                doc['Link'] = self.data[year][case]['Metadata']['Link']
+                doc['Diaarinumero'] = self.data[year][case]['Metadata']['Diaarinumero:']
+                doc['Antopäivä'] = self.data[year][case]['Metadata']['Antopäivä:']
+                
+                doc['Description'] = self.data[year][case]["Description"]
+                
+                for section in ["Lower Courts", "Appeal to the Supreme Court", "Decision of the Supreme Court"]:
+                    
+                    doc[section] = ""
+                    for subsection in self.data[year][case][section].keys():
+                        for item in self.data[year][case][section][subsection]:
+                            doc[section] += item
+                            
+            documents.append(doc)
+
+        return documents
+    
 if __name__ == "__main__":
     file_path = '../data/en_sample_database.json'
     db = LexDatabase(file_path)
