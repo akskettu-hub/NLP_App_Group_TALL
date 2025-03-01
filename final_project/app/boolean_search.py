@@ -147,7 +147,7 @@ def exact_match(query, documents):
     
     return matching_docs
 
-def retrieve_matches(query, td_matrix, t2i, documents):
+def retrieve_matches(query, documents=None, matrix=None, tfv=None):
     results = []
     
     # Check if the query begins and ends with " "
@@ -165,6 +165,7 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         return [{"document": documents[i], "score": 1.0} for i in hits_list]
     
     return results
+
 
 
         
