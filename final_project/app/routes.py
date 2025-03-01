@@ -42,7 +42,7 @@ def search():
         results = tf_get_results(scores, documents)[:3]   or []
     elif search_type == 'boolean':
         # For boolean  search, use the retrieve_matches function from booleansearch.py
-        results = boolean_retrieve_matches(user_query, documents=documents, matrix=boolean_td_matrix, tfv=boolean_t2i)[:3]   or []
+        results = boolean_retrieve_matches(user_query, boolean_td_matrix, boolean_t2i, documents)[:3]   or []
 
     
 
