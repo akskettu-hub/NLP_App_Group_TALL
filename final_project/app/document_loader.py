@@ -1,6 +1,5 @@
 import json
 
-from neural_search import neural_search, load_documents as load_neural_documents
 class LexDatabase:
     def __init__(self, file_path):
         with open(file_path) as json_file:
@@ -8,7 +7,7 @@ class LexDatabase:
         
         self.data = data
         
-    def documents(self):
+    def documents(self): # Handles loading documents originally from neural search and modified
         documents = []
         
         for year, cases in self.data.items():
@@ -33,7 +32,7 @@ class LexDatabase:
                 
                 ### Suppose we want what's in the "content" entries:
                 
-                for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu"]:
+                for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu", "Lower Courts", "Decision of the Supreme Court", "Appeal to the Supreme Court"]:
                     if section in case_info and "Contents" in case_info[section]:
                         text_content.append(f"\n{section}:")
                         text_content.extend(case_info[section]["Contents"])
@@ -49,6 +48,4 @@ if __name__ == "__main__":
     docs = db.documents()
     
     
-    documents = load_neural_documents(file_path)
     
-    print(True if docs == documents else False)

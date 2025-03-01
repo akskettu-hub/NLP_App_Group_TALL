@@ -4,10 +4,15 @@ from app import app
 from app.neural_search import neural_search, load_documents as load_neural_documents
 from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, load_documents as load_tfidf_documents
 from app.boolean_search import load_documents as load_boolean_documents, document_setup as boolean_document_setup, retrieve_matches as boolean_retrieve_matches
+from app.document_loader import LexDatabase
+
+# Set up LexDatabase object
+file_path = 'data/database.json'
+db = LexDatabase(file_path)
 
 # Load documents for all search types
-file_path = 'data/en_sample_database.json'
-documents = load_neural_documents(file_path)
+
+documents = db.documents()
 
 # For the TF-IDF search, prepare the TF-IDF matrix and vectorizer
 tf_matrix, tfv = tf_document_setup(documents)
