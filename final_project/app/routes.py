@@ -1,18 +1,20 @@
 from flask import Flask, request, render_template, jsonify, send_from_directory
 import json
 from app import app
-from app.neural_search import neural_search, load_documents as load_neural_documents
+from app.neural_search import neural_search, load_documents as load_neural_documents, embedd_doc, cosine_similarities, neural_search_results
 from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, load_documents as load_tfidf_documents
 from app.boolean_search import load_documents as load_boolean_documents, document_setup as boolean_document_setup, retrieve_matches as boolean_retrieve_matches
 from app.document_loader import LexDatabase
 
 # Set up LexDatabase object
-file_path = 'data/database.json'
+file_path = '../data/database.json'
 db = LexDatabase(file_path)
+
+documents = db.documents()
+db.add_document_embeddings(embedd_doc(db.contents)) #adds doc title and emmeding to Database attribute self.emmeddings
 
 # Load documents for all search types
 
-documents = db.documents()
 
 # For the TF-IDF search, prepare the TF-IDF matrix and vectorizer
 tf_matrix, tfv = tf_document_setup(documents)
@@ -36,6 +38,8 @@ def search():
     results = []
 
     if search_type == 'neural':
+        scores = cosine_similarities(db.embeddings, user_query)
+        results = neural_search_results(scores, db.doc_dict) or []
         results = neural_search(documents, user_query) or []
     elif search_type == 'tfidf':
         scores = retrieve_matches(user_query, tf_matrix, tfv)

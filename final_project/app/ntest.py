@@ -9,45 +9,14 @@ import matplotlib.pyplot as plt
 model = SentenceTransformer('distiluse-base-multilingual-cased-v2')  # We can change it to a better model if we find one
 stemmer = SnowballStemmer("finnish")
 
-
-def load_documents(file_path):
-    documents = []
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-        
-## updated funtion per Friday's discussion
-    for year, cases in data.items():
-        for case_info in cases.values():  
-            text_content = []
-            
-            if "Title" in case_info:
-                text_content.append(f"Title: {case_info['Title']}")  
-            
-            if "Metadata" in case_info:
-                metadata = case_info["Metadata"]
-                if "Link" in metadata:
-                    text_content.append(f"Link: {metadata['Link']}")
-                if "Diaarinumero:" in metadata:
-                    text_content.append(f"Diaarinumero: {metadata['Diaarinumero:']}")
-                if "Antopäivä:" in metadata:
-                    text_content.append(f"Antopäivä: {metadata['Antopäivä:']}")
-            
-            if "Description" in case_info:
-                text_content.append("Description:")
-                text_content.extend(case_info["Description"])
-            
-            ### Suppose we want what's in the "content" entries:
-            
-            for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu"]:
-                if section in case_info and "Contents" in case_info[section]:
-                    text_content.append(f"\n{section}:")
-                    text_content.extend(case_info[section]["Contents"])
-            
-            
-            documents.append("\n".join(text_content))
-
-    return documents
-
+def test():
+    string = ["test string is this I like beans", "another string", "yet morestrings clump "]
+    doc_embeddings = model.encode(string)
+    query_embedding = model.encode("beans")
+    
+    cosine_similarities = np.dot(query_embedding, doc_embeddings.T)
+    print(cosine_similarities)
+    
 def embedd_doc(contents : list):
     embeddigns = []
     for doc in contents:
@@ -90,7 +59,7 @@ def neural_search_results(sorted_similarities, docs):
         results.append(result)     
         
     return results
-
+    
 def neural_search(documents, user_input):
     doc_embeddings = model.encode(documents)  # Encode documents
     query_embedding = model.encode(user_input)  # Encode user input
@@ -158,65 +127,8 @@ def neural_search(documents, user_input):
     # return result_scores, result_titles  
     return results
 
-
-'''    
-def plotting(result_scores, result_titles):
-    # Visualize the results
-    plt.bar(result_titles, result_scores)
-    plt.xlabel('Document')
-    plt.ylabel('Match Score')
-    plt.title('Top Search Results')
-    plt.ylim(0.3)
-    plt.show()
-'''
-
-
-def user_query():
-    print()
-    user_input = input("Please Enter your query, type 'quit' to exit: ")
-    return user_input
-
-# tokenizer that applies stemming
-def stem_tokenizer(text):
-    tokens = re.findall(r'\b\w+\b', text.lower())  
-    return [stemmer.stem(token) for token in tokens]  
-
-# Function to process the query (exact match for quoted phrases, stemming for other tokens)
-def process_query(query):
-    tokens = []
-    # This regex finds either "something in quotes" or individual words
-    pattern = r'"(.*?)"|(\w+)'
-    for match in re.finditer(pattern, query):
-        if match.group(1):  # If token is in double quotes => exact match
-            tokens.append((match.group(1).lower(), True))
-        elif match.group(2):  # Otherwise, token is to be stemmed
-            tokens.append((match.group(2).lower(), False))
-    return tokens
-
-def input_checker(user_input):
-    if user_input == "quit" or user_input == "":
-        print("Exit")
-        return False
-    return True
-
-
-'''
-def main():
-
-    file_path = '../data/en_sample_database.json'
-    documents = load_documents(file_path)
-
-    while True:
-        user_input = user_query()
-        if input_checker(user_input) == False: 
-            break
-            
-        results, result_scores, result_titles = neural_search(documents, user_input)
-        plotting(result_scores, result_titles)
-
-        
-
-# Run the main function
 if __name__ == "__main__":
-    main()
-'''
+    contents = [['KKO:2015:1', 'X Oy:n vastuuhenkilö A oli nostanut perusteettomien aliurakointilaskujen avulla yhtiöstä varoja ja hänet oli tuomittu yhtiön verotuksessa tehdystä törkeästä veropetoksesta hänen annettuaan yhtiön veroilmoituksissa vääriä tietoja veron määrään vaikuttavista seikoista. Osa varoista oli jäänyt A:lle ja A oli tuomittu myös henkilökohtaisessa verotuksessaan tekemästään veropetoksesta. Korkeimman oikeuden ratkaisusta ilmenevillä perusteilla katsottiin, ettei A:lla ollut niin sanotun itsekriminointisuojan perusteella oikeutta jättää ilmoittamatta X Oy:stä saamiaan varoja henkilökohtaisessa verotuksessaan. Jättäessään varat ilmoittamatta A syyllistyi törkeään veropetokseen. Ks. KKO:2011:35']]
+    
+    res = embedd_doc(contents)
+    print(res)
