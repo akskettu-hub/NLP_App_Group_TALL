@@ -182,23 +182,3 @@ if __name__ == "__main__":
     td_matrix = setup[0]
     t2i = setup[1]
     main()
-            
-def main():
-
-    while True:
-        user_input = user_query()
-        if input_checker(user_input) == False:
-            break
-        hits_list = retrieve_matches(user_input)
-        print_retrieved(hits_list)
-                
-
-if __name__ == "__main__":
-    file_path = 'en_sample_database.json'
-    documents = load_documents(file_path)
-    documents = documents
-    setup = document_setup(documents) 
-    td_matrix = setup[0]
-    t2i = setup[1]
-    main()
-'''
