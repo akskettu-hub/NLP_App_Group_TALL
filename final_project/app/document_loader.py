@@ -2,7 +2,7 @@ import json
 #from ntest import embedd_doc, cosine_similarities, neural_search, neural_search_results
 class LexDatabase:
     def __init__(self, file_path):
-        with open(file_path) as json_file:
+        with open(file_path, encoding="utf-8") as json_file:
             data = json.load(json_file) 
         
         self.data = data
@@ -90,16 +90,15 @@ class LexDatabase:
             contents.append(data)
         return contents    
         pass
-            
-    
+
 if __name__ == "__main__":
     file_path = '../data/database.json'
     db = LexDatabase(file_path)
     docs = db.documents_dict()
     
-    #print(docs[0])
-    #contents = db.text_contents(docs)
-    #print(contents[0])
+    print(docs[0])
+    contents = db.text_contents(docs)
+    print(contents[0])
     #print(db.contents[0])
     #db.add_document_embeddings(embedd_doc(db.contents))
     

@@ -5,16 +5,18 @@ import json
 import re # for exact match
 from nltk.stem import SnowballStemmer # for Finnish stemming
 import matplotlib.pyplot as plt
+from app.document_loader import LexDatabase
 
-model = SentenceTransformer('distiluse-base-multilingual-cased-v2')  # We can change it to a better model if we find one
+
+model = SentenceTransformer('distiluse-base-multilingual-cased-v2')  
 stemmer = SnowballStemmer("finnish")
 
-
+'''
 def load_documents(file_path):
     documents = []
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
-        
+
 ## updated funtion per Friday's discussion
     for year, cases in data.items():
         for case_info in cases.values():  
@@ -47,7 +49,7 @@ def load_documents(file_path):
             documents.append("\n".join(text_content))
 
     return documents
-
+'''
 def embedd_doc(contents : list):
     embeddigns = []
     for doc in contents:
@@ -199,7 +201,38 @@ def input_checker(user_input):
         return False
     return True
 
+def main():
+    file_path = '../data/database.json'  
+    db = LexDatabase(file_path)  # Initialize LexDatabase
 
+    docs = db.documents_dict()  # Get structured document data
+    contents = db.text_contents(docs)  # Extract text contents (title + description)
+
+    # Generate embeddings for documents
+    db.add_document_embeddings(embedd_doc(contents))
+
+    while True:
+        user_input = user_query()
+        if not input_checker(user_input):  
+            break
+        
+        # Compute cosine similarities and get ranked results
+        results = cosine_similarities(db.embeddings, user_input)
+        search_results = neural_search_results(results, docs)
+
+        # Display results
+        for result in search_results:
+            print(f"\nRank: {result['rank']}")
+            print(f"Title: {result['title']}")
+            print(f"Link: {result['link']}")
+            print(f"Diaarinumero: {result['diaarinumero']}")
+            print(f"Antopäivä: {result['antopaiva']}")
+            print(f"Description: {result['description']}...")
+            print(f"Score: {result['score']}\n")
+'''
+if __name__ == "__main__":
+    main()
+'''
 '''
 def main():
 
@@ -212,7 +245,7 @@ def main():
             break
             
         results, result_scores, result_titles = neural_search(documents, user_input)
-        plotting(result_scores, result_titles)
+        #plotting(result_scores, result_titles)
 
         
 
