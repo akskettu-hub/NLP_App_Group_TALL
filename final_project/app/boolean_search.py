@@ -81,6 +81,19 @@ def rewrite_query(query, t2i):
     query = query.lower()
     return " ".join(avoid_operators(t, t2i) for t in query.split())
 
+def fix_not(query): #  replace " not " with " and not " 
+    transformed_query = []
+    words = query.split()
+
+    for i, word in enumerate(words):
+        if word.lower() == "not" and (i == 0 or words[i - 1].lower() != "and"):
+            transformed_query.append("and")
+            transformed_query.append("not")
+        else:
+            transformed_query.append(word)
+    
+    return " ".join(transformed_query)
+
 '''
 def stemming(documents):
     
@@ -163,6 +176,8 @@ def retrieve_matches(query, td_matrix, t2i, documents):
 
     # Process normal query (Boolean search or similar)
     try:
+        query = transform_not_to_and_not(query)
+        
         hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
         hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
         
