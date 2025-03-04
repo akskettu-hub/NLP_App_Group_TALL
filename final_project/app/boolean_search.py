@@ -155,7 +155,6 @@ def retrieve_matches(query, td_matrix, t2i, documents):
             results.append(case_info)  # Append to the results list
         
         return results
-    
     # Process normal query (Boolean search or similar)
     hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
     hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
@@ -175,7 +174,10 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         # Append the structured case info to the results list
         results.append(case_info)
 
+    # Ensure results are in a consistent format: list of dictionaries with 'document' and 'score'
     return results
+
+
 
 
 def exact_match(query, documents):   
@@ -184,7 +186,7 @@ def exact_match(query, documents):
     matching_docs = []
     for i, doc in enumerate(documents):
         if pattern.search(doc):
-            matching_docs.append(i)
+            matching_docs.append(doc)  # Append the actual document that matched the query
     
     return matching_docs
 
