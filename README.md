@@ -44,6 +44,8 @@ Each individual case is stored as follows, with a brief explainaion of the data 
             "Lower Courts": { Proceedings of the case through the lower courts. Typically a description of the background of the case is incuded followed by procedings at each individual court. },
             "Appeal to the Supreme Court": { Describes the circumstances of the appeal made to the supreme court },
             "Decision of the Supreme Court": { Contains a description of the decision of the Supreme court. Typically contains the sections reasoning, the final decision, and possible dissenting oppions. }
+                        }
+        }
 }
 ```
 ### Scraping
@@ -54,6 +56,41 @@ The code first scraped the website to find all the links to all the rulings. Thi
 The scraping of the individual rulings was handled with the function `scrape_document()`, which scraped through a ruling, using the structure of the HTML to find the different sections found in each ruling. This was not a straightforward proccess because the structure of the HTML was not particularly clear and consistent across rulings, and the logic of `scrape_document()` is therefore quite complicated. Some rulings varied quite significantly from most other rulings and the function `tidy_document()` was implemented as a result. Even with this, some inconsistencies emerged in the data due to variability in the documents. It was decided that perfecting the database was too laboursome for the scope of this project, and documents that varied sigificantly enough to cause problems in the app were simply deleted with the functions `check_database()` and `final_database()`. This ended up being about 30 documents out of 983.
 
 Finally, the actual database was built with the function `build_new_database()` which stored the data in json format in `final_project/data/database.json`.
+
+### Data handling in app
+#### Document Loader
+The script `document_loader.py` is responsible of the handling of all data when the app is running. It implements a class called `LexDatabase`, which stores the in-app data in it's attributes, and has class methods that interact with the data. This is so that the search function scripts don't have deal with handling the data, and to make the app more modular. Initialising the class, which takes a file path as its argument, stores the data stored on disk in the attribute `self.data`
+
+##### LexDatabase Attributes
+
+Initialising the class, which takes a file path as its argument, stores the data stored on disk in the attribute `self.data`
+
+`self.doc_dict` contains a list of all the documents in the database, each as a dictionary with the following format:
+
+```
+{
+    'Title' = ... , 
+    'Link' = ... ,
+    'Diaarinumero' = ... , 
+    'Antopäivä' = ... ,
+    'Description' = ... , 
+    "Lower Courts" = ...,
+    "Appeal to the Supreme Court" = ... ,
+    "Decision of the Supreme Court" = ...
+
+}
+```
+In other words, this class attribute contains all the data available to the programme. The construction of this variable happens automatically when the class is initilised with the function `self.documents_dict()` 
+
+*Note from Akseli: if you need to have a piece of data available that is not currently here , add it here to the function `self.documents_dict()`, it shouldn't mess with any current functionality. This could be, for example, adding a the year to the data, adding additional fields, etc.*
+
+The class attribute `self.contents` contains a list with each item being a list, with the first element being the title of the case, and the second being the description as a string. This attribute is used in setting up documents for neural_search and tfidf. The attribute is construcred at inisialiation with the class method`text_contents()`, which uses the attribute `self.doc_dict` as it's argument. The tittle is present as an id for each text, so that in setting up documents, preforming searches, and fetching results, the correct document is associated with the correct text. 
+
+*Note from Akseli: Currently, this field contains only the description, and that's all that's used for document set up and therefore searches. I will later test if adding the whole text of each case makes the programme too slow because it will increase the text used in the document setup by about threefold. In the future we might have two separate attributes: one with just the description and one with all the text in each doc*
+
+The attribute `self.embeddings` contains the word emeddings for each document, along with its title. This is so that the embeddings are stored for each document individually and can therefore be stored in memory as opposed to being run each time a search is performed. This attribute is constructed by passing the embeddings from `neural_search.embedd_doc()` to the class method `add_document_embeddings()` 
+
+`self.tf_matrix` will contain the tf_matrix variable currently in routes.py. Hasn't been implemented, and will not greatly affect the overall programme. It's just neater to store it here. I will probably also store the tfv here, but those are not critical things.  
 
 ## Search functions
 ### 1. Boolean search: 
