@@ -8,7 +8,10 @@ class LexDatabase:
         self.data = data
         self.doc_dict = self.documents_dict()
         self.contents = self.text_contents(self.doc_dict)
+        
         self.embeddings = []
+        
+        self.tf_matrix = []
         
     def documents(self): # Handles loading documents originally from neural search and modified
         documents = []
@@ -69,7 +72,7 @@ class LexDatabase:
                         for item in self.data[year][case][section][subsection]:
                             doc[section] += item
                             
-            documents.append(doc)
+                documents.append(doc)
 
         return documents
     
@@ -92,9 +95,11 @@ class LexDatabase:
         pass
 
 if __name__ == "__main__":
-    file_path = '../data/database.json'
+    file_path = 'data/database.json'
     db = LexDatabase(file_path)
-    docs = db.documents_dict()
+    
+    print(len(db.doc_dict))
+    """"docs = db.documents_dict()
     
     print(docs[0])
     contents = db.text_contents(docs)
@@ -103,7 +108,7 @@ if __name__ == "__main__":
     #db.add_document_embeddings(embedd_doc(db.contents))
     
     print(db.embeddings[0])
-    query = "fraud"
+    query = "fraud"""""
     
     #sim = cosine_similarities(db.embeddings, query)
     

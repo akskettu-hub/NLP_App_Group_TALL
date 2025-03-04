@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, jsonify, send_from_directory
 import json
 from app import app
 from app.neural_search import neural_search, embedd_doc, cosine_similarities, neural_search_results
-from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, load_documents as load_tfidf_documents
+from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, tfidf_search_results
 from app.boolean_search import load_documents as load_boolean_documents, document_setup as boolean_document_setup, retrieve_matches as boolean_retrieve_matches
 from app.document_loader import LexDatabase
 
@@ -18,7 +18,8 @@ db.add_document_embeddings(embedd_doc(db.contents))  # Generates embeddings for 
 
 
 # For the TF-IDF search, prepare the TF-IDF matrix and vectorizer
-tf_matrix, tfv = tf_document_setup(documents)
+tf_matrix, tf_columns, tfv = tf_document_setup(db.contents)
+#tf_matrix, tfv = tf_document_setup(documents)
 
 # For Boolean search, prepare the Boolean matrix
 # boolean_documents = load_boolean_documents(file_path)
@@ -44,7 +45,10 @@ def search():
         #results = neural_search(documents, user_query) or []
     elif search_type == 'tfidf':
         scores = retrieve_matches(user_query, tf_matrix, tfv)
-        results = tf_get_results(scores, documents)[:3]   or []
+        scores_and_titles = tf_get_results(scores, tf_columns)
+        results = tfidf_search_results(scores_and_titles, db.doc_dict)
+        #scores = retrieve_matches(user_query, tf_matrix, tfv)
+        #results = tf_get_results(scores, documents)[:3]   or []
     elif search_type == 'boolean':
         # For boolean  search, use the retrieve_matches function from booleansearch.py
         results = boolean_retrieve_matches(user_query, boolean_td_matrix, boolean_t2i, documents)[:3]   or []
