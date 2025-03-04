@@ -176,8 +176,8 @@ def retrieve_matches(query, td_matrix, t2i, documents):
 
     # Process normal query (Boolean search or similar)
     try:
-        query = transform_not_to_and_not(query)
-        
+        query = fix_not(query)
+
         hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
         hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
         
