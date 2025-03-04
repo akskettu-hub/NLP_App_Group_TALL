@@ -170,6 +170,8 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         case_info = extract_case_info(document)
         # Add the score (from the hits_matrix) to the case_info dictionary
         case_info["score"] = hits_matrix[0, i]
+        # Add document information for consistency in the result format
+        case_info["document"] = document
         # Append the structured case info to the results list
         results.append(case_info)
 
