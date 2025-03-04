@@ -144,6 +144,11 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         # Return exact match results as a list of dictionaries with 'document' and 'score'
         matched_documents = exact_match(query, documents)
         
+        # If no matches are found
+        if not matched_documents:
+            print("No matches found.")
+            return []
+
         # Initialize results list for exact matches
         results = []
 
@@ -155,28 +160,37 @@ def retrieve_matches(query, td_matrix, t2i, documents):
             results.append(case_info)  # Append to the results list
         
         return results
+
     # Process normal query (Boolean search or similar)
-    hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
-    hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
+    try:
+        hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
+        hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
+        
+        # If no matches are found
+        if not hits_list:
+            print("No matches found.")
+            return []
 
-    # Initialize an empty list to store results
-    results = []
+        # Initialize an empty list to store results
+        results = []
 
-    # Process each document from the retrieved hits
-    for i in hits_list:
-        document = documents[i]  # Get the document text based on index
-        # Extract structured case info using the extract_case_info function
-        case_info = extract_case_info(document)
-        # Add the score (from the hits_matrix) to the case_info dictionary
-        case_info["score"] = hits_matrix[0, i]
-        # Add document information for consistency in the result format
-        case_info["document"] = document
-        # Append the structured case info to the results list
-        results.append(case_info)
+        # Process each document from the retrieved hits
+        for i in hits_list:
+            document = documents[i]  # Get the document text based on index
+            # Extract structured case info using the extract_case_info function
+            case_info = extract_case_info(document)
+            # Add the score (from the hits_matrix) to the case_info dictionary
+            case_info["score"] = hits_matrix[0, i]
+            # Add document information for consistency in the result format
+            case_info["document"] = document
+            # Append the structured case info to the results list
+            results.append(case_info)
 
-    # Ensure results are in a consistent format: list of dictionaries with 'document' and 'score'
-    return results
+        return results
 
+    except Exception as e:
+        print(f"Error processing query: {e}")
+        return []
 
 
 
