@@ -1,7 +1,7 @@
 # NLP_App_Group_TALL - final_project
 
 ## About our project
-Hi! We are **Team TALL (Tzang, Aleksi, Liisa, Lisa) **! This repository is for the group project for the course **"Building NLP Applications"**.
+Hi! We are **Team TALL (Tzang, Aleksi, Liisa, Lisa)**! This repository is for the group project for the course **"Building NLP Applications"**.
 
 Our project is a **search engine** designed to search within the **Supreme Court precedence rulings of Finland**. The goal of our application is to make these court rulings more open and accessible to the public and to non-finish speaking. 
 
