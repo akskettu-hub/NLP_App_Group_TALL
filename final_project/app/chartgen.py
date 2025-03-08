@@ -18,7 +18,7 @@ def generate_chart(data, search_results=[]):
     plt.figure(figsize=(10, 2))
     if len(search_results)>0: 
         plt.bar(plot_x, plot_y, color="#d6eaf7", width=0.2, align="center")
-        plt.bar(plot_x, results, color="#3498db", width=0.2, align="center")
+        plt.bar(plot_x, search_results, color="#3498db", width=0.2, align="center")
     else:
         plt.bar(plot_x, plot_y, color="#3498db", width=0.2, align="center")
     plt.xlabel("Year")

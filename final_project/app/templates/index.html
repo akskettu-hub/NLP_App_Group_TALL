@@ -44,7 +44,10 @@
             </div>
             <button type="submit">Search</button>
         </form>
-
+        <div class="chart-container">
+            <img src="{{ url_for('static', filename='../static/images/chart.png') }}" alt="Case Distribution Chart" class="chart">
+        </div>
+    
         {% if error %}
         <p style="color: red;">{{ error }}</p>
         {% endif %}
