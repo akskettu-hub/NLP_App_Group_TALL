@@ -5,6 +5,7 @@ from app.neural_search import neural_search, embedd_doc, cosine_similarities, ne
 from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, tfidf_search_results
 from app.boolean_search import load_documents as load_boolean_documents, document_setup as boolean_document_setup, retrieve_matches as boolean_retrieve_matches
 from app.document_loader import LexDatabase
+from app.chartgen import generate_chart
 
 # Set up LexDatabase object
 file_path = 'data/database.json'
@@ -13,7 +14,7 @@ db = LexDatabase(file_path)
 documents = db.documents()
 db.add_document_embeddings(embedd_doc(db.contents))  # Generates embeddings for the documents
 
-
+generate_chart(db) # Generates the chart
 # Load documents for all search types
 
 
