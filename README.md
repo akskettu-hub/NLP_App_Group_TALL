@@ -86,41 +86,41 @@ Utilizes transformer models for **semantic search**. The current implementation 
 ## Running the project
 The relevant code is stored in the folder **final_project**. 
 
-## Prerequisites
+### Prerequisites
 Make sure you have the following installed on your system:
 
 - Python 3.8 or higher
 - pip (Python package manager)
 - A virtual environment (optional but recommended)
 
-## Installation
+### Installation
 
-### 1. Clone the Repository
+#### 1. Clone the Repository
 ```sh
 $ git clone <repository-url>
 $ cd final_project
 ```
 
-### 2. Create and Activate a Virtual Environment (Optional but Recommended)
+#### 2. Create and Activate a Virtual Environment (Optional but Recommended)
 
-#### On Windows (Command Prompt):
+##### On Windows (Command Prompt):
 ```sh
 $ python -m venv venv
 $ venv\Scripts\activate
 ```
 
-#### On macOS/Linux:
+##### On macOS/Linux:
 ```sh
 $ python3 -m venv venv
 $ source venv/bin/activate
 ```
 
-### 3. Install Required Dependencies
+#### 3. Install Required Dependencies
 ```sh
 $ pip install -r requirements.txt
 ```
 
-## Running the Application
+### Running the Application
 
 1. Ensure you are in the `final_project` directory.
 2. Run the Flask application with the following command:
