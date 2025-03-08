@@ -5,7 +5,7 @@ from app.neural_search import neural_search, embedd_doc, cosine_similarities, ne
 from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, tfidf_search_results
 from app.boolean_search import load_documents as load_boolean_documents, document_setup as boolean_document_setup, retrieve_matches as boolean_retrieve_matches
 from app.document_loader import LexDatabase
-from app.chartgen import generate_chart
+from app.chartgen import generate_chart, case_distribution
 import numpy as n
 
 # Set up LexDatabase object
@@ -55,7 +55,7 @@ def search():
         # For boolean  search, use the retrieve_matches function from booleansearch.py
         results = boolean_retrieve_matches(user_query, boolean_td_matrix, boolean_t2i, documents)[:3]   or []
 
-    generate_chart(db, n.arange(1, 12, 1))
+    generate_chart(db, case_distribution(db, results)) # Generates the chart
 
     print(f"Search Type: {search_type}, Query: {user_query}, Results: {results}")
     return render_template('index.html', results=results, query=user_query, search_type=search_type)
