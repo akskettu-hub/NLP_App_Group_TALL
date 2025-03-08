@@ -167,6 +167,8 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         document = documents[i]  # Get the document text based on index
         # Extract structured case info using the extract_case_info function
         case_info = extract_case_info(document)
+        # Lowercase all keys in the case_info dictionary
+        case_info = {k.lower(): v for k, v in case_info.items()}
         # Add the score (from the hits_matrix) to the case_info dictionary
         case_info["score"] = hits_matrix[0, i]
         # Add document information for consistency in the result format
