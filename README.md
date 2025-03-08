@@ -3,12 +3,7 @@
 ## About our project
 Hi! We are **Team TALL (Tzang, Aleksi, Liisa, Lisa)**! This repository is for the group project for the course **"Building NLP Applications"**.
 
-Our project is a **search engine** designed to search within the **Supreme Court precedence rulings of Finland**. The goal of our application is to make these court rulings more open and accessible to the public and to non-finish speaking. 
-
-The search engine supports multiple search modes:
-- **Boolean Search**: Allows searching using logical operators (AND, OR, NOT) for precise results.
-- **TF-IDF Search**: Uses term frequency-inverse document frequency to rank relevant documents.
-- **Neural Search**: Supports **English queries** and finds relevant matches within **Finnish legal texts** using machine learning techniques.
+This project is a search engine for the Supreme Court of Finland's rulings. The aim is to make these rulings more accessible to the public, especially those unfamiliar with legal language. The app allows users to search using **Boolean search**, **TF-IDF search**, and **Neural search**, with support for English queries that retrieve results from Finnish texts.
 
 ## Data
 The data for this project consists of the rulings of the Finnish Supreme Court from **2015-2025**, totaling **953 rulings**, scraped from **Finlex**, a public database for Finnish law and legal documents maintained by the **Finnish Ministry of Justice**. The data is stored in JSON format at the location `final_project/data/database.json`.
