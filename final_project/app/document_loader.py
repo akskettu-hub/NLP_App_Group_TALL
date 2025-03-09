@@ -1,7 +1,8 @@
 import json
-#from ntest import embedd_doc, cosine_similarities, neural_search, neural_search_results
+
 class LexDatabase:
     def __init__(self, file_path):
+        print("Initializing database...")
         with open(file_path, encoding="utf-8") as json_file:
             data = json.load(json_file) 
         
@@ -13,7 +14,10 @@ class LexDatabase:
         
         self.tf_matrix = []
         
+        print("Initialization complete.")
+        
     def documents(self): # Handles loading documents originally from neural search and modified
+        print("Setting up documents...")
         documents = []
         
         for year, cases in self.data.items():
@@ -36,8 +40,6 @@ class LexDatabase:
                     text_content.append("Description:")
                     text_content.extend(case_info["Description"])
                 
-                ### Suppose we want what's in the "content" entries:
-                #Akseli's note, this does not get all the contents of these fields, btw.
                 for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu", "Lower Courts", "Decision of the Supreme Court", "Appeal to the Supreme Court"]: # Added current headings
                     if section in case_info and "Contents" in case_info[section]:
                         text_content.append(f"\n{section}:")
@@ -46,11 +48,11 @@ class LexDatabase:
                 
                 documents.append("\n".join(text_content))
 
+        print("Document setup complete.")
         return documents
     
     def documents_dict(self): # This returns the documents in dict format in a list if that is easier for some applications
         documents = []
-        
         
         for year in self.data.keys():
             for case in self.data[year].keys():
@@ -79,15 +81,12 @@ class LexDatabase:
     def add_document_embeddings(self, embeddings):
         for item in embeddings:
             self.embeddings.append(item)
-        
     
     def text_contents(self, documents): #return text contents and title
         contents = []
         for doc in documents:
             data = []
             data.append(doc["Title"])
-            #text = ""
-            #text += documents[doc]["Description"]
             data.append(doc["Description"])
             
             contents.append(data)
@@ -108,20 +107,4 @@ if __name__ == "__main__":
     #db.add_document_embeddings(embedd_doc(db.contents))
     
     print(db.embeddings[0])
-    query = "fraud"""""
-    
-    #sim = cosine_similarities(db.embeddings, query)
-    
-    #print(sim[:10]) 
-    
-    #sim = cosine_similarities1(db.contents, query)
-    
-    #print(sim[:10]) 
-    
-    #docs_old = db.documents()
-    
-    #neural_search(docs_old)
-    #result = neural_search_results(sim, db.doc_dict)
-    
-    #print(result)
-    
+    query = "fraud"""  

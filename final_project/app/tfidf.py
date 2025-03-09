@@ -1,7 +1,5 @@
 import numpy as np
-from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
-import json
-import re
+from sklearn.feature_extraction.text import TfidfVectorizer
     
 # Document setup using TfidfVectorizer, uses LexDatabase
 def tf_document_setup(documents):

@@ -8,43 +8,6 @@ from nltk.stem import SnowballStemmer # for Finnish stemming
 
 stemmer = SnowballStemmer("finnish")
 
-"""def load_documents(file_path):
-    documents = []
-    with open(file_path, 'r', encoding='utf-8') as file:
-        data = json.load(file)
-        
-    for year, cases in data.items():
-        for case_info in cases.values():  
-            text_content = []
-            
-            if "Title" in case_info:
-                text_content.append(f"Title: {case_info['Title']}")  
-            
-            if "Metadata" in case_info:
-                metadata = case_info["Metadata"]
-                if "Link" in metadata:
-                    text_content.append(f"Link: {metadata['Link']}")
-                if "Diaarinumero:" in metadata:
-                    text_content.append(f"Diaarinumero: {metadata['Diaarinumero:']}")
-                if "Antopäivä:" in metadata:
-                    text_content.append(f"Antopäivä: {metadata['Antopäivä:']}")
-            
-            if "Description" in case_info:
-                text_content.append("Description:")
-                text_content.extend(case_info["Description"])
-            
-            ### Suppose we want what's in the "content" entries:
-            
-            for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu"]:
-                if section in case_info and "Contents" in case_info[section]:
-                    text_content.append(f"\n{section}:")
-                    text_content.extend(case_info[section]["Contents"])
-            
-            
-            documents.append("\n".join(text_content))
-
-    return documents
-"""
 d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
      "not": "1 -", "NOT": "1 -",
@@ -177,6 +140,9 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         results.append(case_info)
 
     # Ensure results are in a consistent format: list of dictionaries with 'document' and 'score'
+    """print()
+    print("results in tdidf:")
+    print(results)"""
     return results
 
 
@@ -192,9 +158,6 @@ def exact_match(query, documents):
     
     return matching_docs
 
-
-
-        
 def print_retrieved(hits_list, documents):
     if not hits_list:  
         print("No matching document")

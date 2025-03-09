@@ -1,5 +1,5 @@
 from flask import Flask, request, render_template, jsonify, send_from_directory
-import json
+#import json
 from app import app
 from app.neural_search import  embedd_doc, cosine_similarities, neural_search_results
 from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, tfidf_search_results
@@ -17,7 +17,6 @@ db.add_document_embeddings(embedd_doc(db.contents))  # Generates embeddings for 
 
 generate_chart(db) # Generates the chart
 # Load documents for all search types
-
 
 # For the TF-IDF search, prepare the TF-IDF matrix and vectorizer
 tf_matrix, tf_columns, tfv = tf_document_setup(db.contents)
