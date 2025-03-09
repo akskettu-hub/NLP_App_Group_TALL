@@ -1,9 +1,9 @@
 from flask import Flask, request, render_template, jsonify, send_from_directory
 import json
 from app import app
-from app.neural_search import neural_search, embedd_doc, cosine_similarities, neural_search_results
+from app.neural_search import  embedd_doc, cosine_similarities, neural_search_results
 from app.tfidf import tf_document_setup, retrieve_matches, tf_get_results, tfidf_search_results
-from app.boolean_search import load_documents as load_boolean_documents, document_setup as boolean_document_setup, retrieve_matches as boolean_retrieve_matches
+from app.boolean_search import  document_setup as boolean_document_setup, retrieve_matches as boolean_retrieve_matches
 from app.document_loader import LexDatabase
 from app.chartgen import generate_chart, case_distribution
 import numpy as n
