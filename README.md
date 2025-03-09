@@ -116,6 +116,7 @@ $ source venv/bin/activate
 ```
 
 #### 3. Install Required Dependencies
+Ensure you are in the final_project directory.
 ```sh
 $ pip install -r requirements.txt
 ```
