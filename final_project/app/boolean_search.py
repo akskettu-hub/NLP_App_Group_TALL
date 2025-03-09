@@ -8,7 +8,7 @@ from nltk.stem import SnowballStemmer # for Finnish stemming
 
 stemmer = SnowballStemmer("finnish")
 
-def load_documents(file_path):
+"""def load_documents(file_path):
     documents = []
     with open(file_path, 'r', encoding='utf-8') as file:
         data = json.load(file)
@@ -44,7 +44,7 @@ def load_documents(file_path):
             documents.append("\n".join(text_content))
 
     return documents
-
+"""
 d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
      "not": "1 -", "NOT": "1 -",
