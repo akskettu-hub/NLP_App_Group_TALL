@@ -23,14 +23,6 @@ def document_setup(documents):
     
     return td_matrix, t2i
 
-'''
-
-def user_query():
-    print()
-    user_input = input("Please Enter your query, type 'quit' to exit: ")
-    print()
-    return user_input
-'''
 #Modification of former rewrite_token() from course material that handles words not in documents
 def avoid_operators(t, t2i):
    if t in d:
@@ -62,6 +54,8 @@ def input_checker(user_input):
     return True                
 
 '''
+
+
 def extract_case_info(doc):
     case_info = {
         "Title": "N/A",
@@ -98,7 +92,6 @@ def extract_case_info(doc):
         case_info["Description"] = description_match.group(1).strip()
 
     return case_info
-
 
 def retrieve_matches(query, td_matrix, t2i, documents):
     # Check for exact match (quoted string)
@@ -140,13 +133,7 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         results.append(case_info)
 
     # Ensure results are in a consistent format: list of dictionaries with 'document' and 'score'
-    """print()
-    print("results in tdidf:")
-    print(results)"""
     return results
-
-
-
 
 def exact_match(query, documents):   
     pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE)  # match the exact query as a whole
@@ -157,7 +144,7 @@ def exact_match(query, documents):
             matching_docs.append(doc)  # Append the actual document that matched the query
     
     return matching_docs
-
+"""
 def print_retrieved(hits_list, documents):
     if not hits_list:  
         print("No matching document")
@@ -177,25 +164,4 @@ def print_retrieved(hits_list, documents):
                 limit_doc += " ..."  
             
             #print(limit_doc)
-
-'''
-            
-def main():
-
-    while True:
-        user_input = user_query()
-        if input_checker(user_input) == False:
-            break
-        hits_list = retrieve_matches(user_input)
-        print_retrieved(hits_list)
-                
-
-if __name__ == "__main__":
-    file_path = 'en_sample_database.json'
-    documents = load_documents(file_path)
-    documents = documents
-    setup = document_setup(documents) 
-    td_matrix = setup[0]
-    t2i = setup[1]
-    main()
-'''
+"""
