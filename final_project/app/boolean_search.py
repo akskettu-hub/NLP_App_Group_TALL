@@ -8,6 +8,43 @@ from nltk.stem import SnowballStemmer # for Finnish stemming
 
 stemmer = SnowballStemmer("finnish")
 
+def load_documents(file_path):
+    documents = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        data = json.load(file)
+        
+    for year, cases in data.items():
+        for case_info in cases.values():  
+            text_content = []
+            
+            if "Title" in case_info:
+                text_content.append(f"Title: {case_info['Title']}")  
+            
+            if "Metadata" in case_info:
+                metadata = case_info["Metadata"]
+                if "Link" in metadata:
+                    text_content.append(f"Link: {metadata['Link']}")
+                if "Diaarinumero:" in metadata:
+                    text_content.append(f"Diaarinumero: {metadata['Diaarinumero:']}")
+                if "Antopäivä:" in metadata:
+                    text_content.append(f"Antopäivä: {metadata['Antopäivä:']}")
+            
+            if "Description" in case_info:
+                text_content.append("Description:")
+                text_content.extend(case_info["Description"])
+            
+            ### Suppose we want what's in the "content" entries:
+            
+            for section in ["Asian käsittely alemmissa oikeuksissa", "Muutoksenhaku Korkeimmassa oikeudessa", "Korkeimman oikeuden ratkaisu"]:
+                if section in case_info and "Contents" in case_info[section]:
+                    text_content.append(f"\n{section}:")
+                    text_content.extend(case_info[section]["Contents"])
+            
+            
+            documents.append("\n".join(text_content))
+
+    return documents
+
 d = {"and": "&", "AND": "&",
      "or": "|", "OR": "|",
      "not": "1 -", "NOT": "1 -",
@@ -23,6 +60,14 @@ def document_setup(documents):
     
     return td_matrix, t2i
 
+'''
+
+def user_query():
+    print()
+    user_input = input("Please Enter your query, type 'quit' to exit: ")
+    print()
+    return user_input
+'''
 #Modification of former rewrite_token() from course material that handles words not in documents
 def avoid_operators(t, t2i):
    if t in d:
@@ -35,6 +80,19 @@ def avoid_operators(t, t2i):
 def rewrite_query(query, t2i):
     query = query.lower()
     return " ".join(avoid_operators(t, t2i) for t in query.split())
+
+def fix_not(query): #  replace " not " with " and not " 
+    transformed_query = []
+    words = query.split()
+
+    for i, word in enumerate(words):
+        if word.lower() == "not" and (i == 0 or words[i - 1].lower() != "and"):
+            transformed_query.append("and")
+            transformed_query.append("not")
+        else:
+            transformed_query.append(word)
+    
+    return " ".join(transformed_query)
 
 '''
 def stemming(documents):
@@ -54,8 +112,6 @@ def input_checker(user_input):
     return True                
 
 '''
-
-
 def extract_case_info(doc):
     case_info = {
         "Title": "N/A",
@@ -93,6 +149,7 @@ def extract_case_info(doc):
 
     return case_info
 
+
 def retrieve_matches(query, td_matrix, t2i, documents):
     # Check for exact match (quoted string)
     if query.startswith('"') and query.endswith('"'):
@@ -100,6 +157,11 @@ def retrieve_matches(query, td_matrix, t2i, documents):
         # Return exact match results as a list of dictionaries with 'document' and 'score'
         matched_documents = exact_match(query, documents)
         
+        # If no matches are found
+        if not matched_documents:
+            print("No matches found.")
+            return []
+
         # Initialize results list for exact matches
         results = []
 
@@ -111,29 +173,41 @@ def retrieve_matches(query, td_matrix, t2i, documents):
             results.append(case_info)  # Append to the results list
         
         return results
+
     # Process normal query (Boolean search or similar)
-    hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
-    hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
+    try:
+        query = fix_not(query)
 
-    # Initialize an empty list to store results
-    results = []
+        hits_matrix = eval(rewrite_query(query, t2i))  # Evaluates the query and retrieves the matching documents
+        hits_list = list(hits_matrix.nonzero()[1])  # Extract indices of matching documents
+        
+        # If no matches are found
+        if not hits_list:
+            print("No matches found.")
+            return []
 
-    # Process each document from the retrieved hits
-    for i in hits_list:
-        document = documents[i]  # Get the document text based on index
-        # Extract structured case info using the extract_case_info function
-        case_info = extract_case_info(document)
-        # Lowercase all keys in the case_info dictionary
-        case_info = {k.lower(): v for k, v in case_info.items()}
-        # Add the score (from the hits_matrix) to the case_info dictionary
-        case_info["score"] = hits_matrix[0, i]
-        # Add document information for consistency in the result format
-        case_info["document"] = document
-        # Append the structured case info to the results list
-        results.append(case_info)
+        # Initialize an empty list to store results
+        results = []
 
-    # Ensure results are in a consistent format: list of dictionaries with 'document' and 'score'
-    return results
+        # Process each document from the retrieved hits
+        for i in hits_list:
+            document = documents[i]  # Get the document text based on index
+            # Extract structured case info using the extract_case_info function
+            case_info = extract_case_info(document)
+            # Add the score (from the hits_matrix) to the case_info dictionary
+            case_info["score"] = hits_matrix[0, i]
+            # Add document information for consistency in the result format
+            case_info["document"] = document
+            # Append the structured case info to the results list
+            results.append(case_info)
+
+        return results
+
+    except Exception as e:
+        print(f"Error processing query: {e}")
+        return []
+
+
 
 def exact_match(query, documents):   
     pattern = re.compile(r'\b' + query + r'\b', re.IGNORECASE)  # match the exact query as a whole
@@ -144,7 +218,10 @@ def exact_match(query, documents):
             matching_docs.append(doc)  # Append the actual document that matched the query
     
     return matching_docs
-"""
+
+
+
+        
 def print_retrieved(hits_list, documents):
     if not hits_list:  
         print("No matching document")
@@ -164,4 +241,25 @@ def print_retrieved(hits_list, documents):
                 limit_doc += " ..."  
             
             #print(limit_doc)
-"""
+
+'''
+            
+def main():
+
+    while True:
+        user_input = user_query()
+        if input_checker(user_input) == False:
+            break
+        hits_list = retrieve_matches(user_input)
+        print_retrieved(hits_list)
+                
+
+if __name__ == "__main__":
+    file_path = 'en_sample_database.json'
+    documents = load_documents(file_path)
+    documents = documents
+    setup = document_setup(documents) 
+    td_matrix = setup[0]
+    t2i = setup[1]
+    main()
+'''
