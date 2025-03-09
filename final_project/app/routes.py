@@ -7,10 +7,16 @@ from app.boolean_search import  document_setup as boolean_document_setup, retrie
 from app.document_loader import LexDatabase
 from app.chartgen import generate_chart, case_distribution
 import numpy as n
+import os
 
 # Set up LexDatabase object
-file_path = 'data/database.json'
-db = LexDatabase(file_path)
+#file_path = 'data/database.json'
+file_path = os.path.join('data', 'database.json')
+if os.path.isfile(file_path):
+    try:
+        db = LexDatabase(file_path)
+    except:
+        print("Error: Failed to load 'database.json' from disk. Required file is in Repository path 'NLP_App_Group_TALL/final_project/data/database.json'. Make sure you are running the application form the directory 'NLP_App_Group_TALL/final_project'")
 
 documents = db.documents()
 db.add_document_embeddings(embedd_doc(db.contents))  # Generates embeddings for the documents
