@@ -58,10 +58,10 @@
         <h2>Boolean Search Results for "{{ query }}"</h2>
         {% for result in results %}
             <div class="result">
-                <h3><a href="{{ result['Link'] }}" target="_blank">{{ result['Title'] }}</a></h3>
-                 <p><strong>Case Number:</strong> {{ result['Case Number'] or "N/A" }}</p>
-                <p><strong>Date:</strong> {{ result['Date'] or "N/A" }}</p>
-                <p><strong>Description:</strong> {{ result['Description'] }}...</p>
+                <h3><a href="{{ result['Link'] }}" target="_blank">{{ result['title'] }}</a></h3>
+                 <p><strong>Case Number:</strong> {{ result['case number'] or "N/A" }}</p>
+                <p><strong>Date:</strong> {{ result['date'] or "N/A" }}</p>
+                <p><strong>Description:</strong> {{ result['description'] }}...</p>
                 <!--<p><strong>Relevance Score:</strong> {{ "%.2f"|format(result['score']) }}</p>-->
             </div>
         {% endfor %}
