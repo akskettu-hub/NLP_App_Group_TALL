@@ -50,28 +50,6 @@ def rewrite_query(query, t2i):
     query = fix_not(query)  # Apply fix_not before processing
     return " ".join(avoid_operators(t, t2i) for t in query.split())
 
-
-
-'''
-def stemming(documents):
-    
-    stemmed_documents = []
-    for doc in documents:
-        tokens = word_tokenize(doc)  # Tokenize the document
-        stemmed_tokens = [stemmer.stem(word) for word in tokens]  # Apply stemming to each token
-        stemmed_documents.append(" ".join(stemmed_tokens))  # Join the tokens back into a document
-    
-    return stemmed_documents
-
-def input_checker(user_input):
-    if user_input == "quit" or user_input == "":
-        print("Exit")
-        return False
-    return True                
-
-'''
-
-
 def extract_case_info(doc):
     case_info = {
         "Title": "N/A",
@@ -160,24 +138,3 @@ def exact_match(query, documents):
             matching_docs.append(doc)  # Append the actual document that matched the query
     
     return matching_docs
-"""
-def print_retrieved(hits_list, documents):
-    if not hits_list:  
-        print("No matching document")
-    else:
-        print(f"Found {len(hits_list)} matches:")
-        
-        print_limit = 30 # Change the number here to determine the output length
-        
-        for i, doc_idx in enumerate(hits_list):
-            matched_doc = documents[doc_idx]
-            
-           # print(f"\nMatching doc #{i + 1}:")
-            
-            limit_doc = matched_doc[:print_limit]  
-            
-            if len(matched_doc) > print_limit:
-                limit_doc += " ..."  
-            
-            #print(limit_doc)
-"""
